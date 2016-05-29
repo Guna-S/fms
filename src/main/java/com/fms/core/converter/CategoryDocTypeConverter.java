@@ -3,45 +3,45 @@ package com.fms.core.converter;
 import com.fms.core.dto.CategoryDocTypeInfo;
 import com.fms.core.model.CategoryDocType;
 import com.fms.core.model.UploadCategory;
+import com.fms.core.util.React;
+import javaslang.Tuple;
+import javaslang.Tuple2;
 
-import java.util.concurrent.CompletableFuture;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class CategoryDocTypeConverter {
 
-    public static Function<CompletableFuture<UploadCategory>, CompletableFuture<CategoryDocType>> convert(
+    public static Function<React<UploadCategory>, React<CategoryDocType>> convert(
         final CategoryDocTypeInfo source) {
-
-        return (future) -> future.thenComposeAsync(uploadCategory ->
-            CompletableFuture.supplyAsync(() -> CategoryDocType.builder()
-                .on(category -> category.getDesc())
-                .set(source.getDesc())
-                .on(category -> category.getType())
-                .set(source.getType())
-                .on(category -> category.getUploadCategory())
-                .set(uploadCategory)
-                .build()));
+        return (react) -> React
+                .of(react)
+                .then(uc -> CategoryDocType.builder()
+                        .on(c -> c.getDesc())
+                        .set(source.getDesc())
+                        .on(c -> c.getType())
+                        .set(source.getType())
+                        .on(c -> c.getUploadCategory())
+                        .set(uc)
+                        .build());
 
     }
 
     public static CategoryDocTypeInfo convertTo(final CategoryDocType source) {
-        final CategoryDocTypeInfo categoryDocTypeInfo =
-            new CategoryDocTypeInfo(source.getType(), source.getUploadCategory().getName(), source.getDesc());
+        final CategoryDocTypeInfo categoryDocTypeInfo = new CategoryDocTypeInfo(source.getType(), source.getUploadCategory().getName(), source.getDesc());
         categoryDocTypeInfo.setId(String.valueOf(source.getId()));
         return categoryDocTypeInfo;
     }
 
-    public static BiFunction<CompletableFuture<UploadCategory>, Long, CompletableFuture<CategoryDocType>> convertWithId(
+    public static Function<Tuple2<React<UploadCategory>, Long>, React<CategoryDocType>> convertWithId(
         final CategoryDocTypeInfo source) {
-
-        return (future, id) -> convert(source).apply(future)
-            .thenCompose(categoryDocType ->
-                CompletableFuture.supplyAsync(
-                    () -> CategoryDocType.builder(categoryDocType)
+        return (tuple) -> React
+                .of(convert(source).apply(tuple._1))
+                .then(cd -> CategoryDocType
+                        .builder(cd)
                         .on(c -> c.getId())
-                        .set(id)
-                        .build())
-            );
+                        .set(tuple._2)
+                        .build());
     }
 }

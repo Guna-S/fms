@@ -3,32 +3,32 @@ package com.fms.core.service;
 
 import com.fms.core.model.CategoryDocType;
 import com.fms.core.repository.CategoryDocTypeRepository;
+import com.fms.core.util.React;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 public class CategoryDocTypeService {
 
-    public static Function<CategoryDocTypeRepository, CompletableFuture<List<CategoryDocType>>> findAll() {
-        return repository -> CompletableFuture.supplyAsync(repository::findAll);
+    public static Function<CategoryDocTypeRepository, React<List<CategoryDocType>>> findAll() {
+        return repo -> React.of(repo::findAll);
     }
 
-    public static Function<CategoryDocTypeRepository, CompletableFuture<CategoryDocType>> save(final CategoryDocType
+    public static Function<CategoryDocTypeRepository, React<CategoryDocType>> save(final CategoryDocType
                                                                                                     categoryDocType) {
-        return repository -> CompletableFuture.supplyAsync(() -> repository.save(categoryDocType));
+        return repo -> React.of(categoryDocType).then(repo::save);
     }
 
-    public static Function<CategoryDocTypeRepository, CompletableFuture<CategoryDocType>> update(final CategoryDocType
+    public static Function<CategoryDocTypeRepository, React<CategoryDocType>> update(final CategoryDocType
         categoryDocType) {
-        return repository -> CompletableFuture.supplyAsync(() -> repository.saveAndFlush(categoryDocType));
+        return repository -> React.of(categoryDocType).then(repository::saveAndFlush);
     }
 
-    public static Function<CategoryDocTypeRepository, CompletableFuture<CategoryDocType>> findById(final Long id) {
-        return repository -> CompletableFuture.supplyAsync(() -> repository.findOne(id));
+    public static Function<CategoryDocTypeRepository, React<CategoryDocType>> findById(final Long id) {
+        return repository -> React.of(id).then(repository::findOne);
     }
 
-    public static Function<CategoryDocTypeRepository, CompletableFuture<Void>> delete(final Long id) {
-        return repository -> CompletableFuture.runAsync(() -> repository.delete(id));
+    public static Function<CategoryDocTypeRepository, React<Long>> delete(final Long id) {
+        return repository -> React.of(id).thenWithVoid(repository::delete);
     }
 }

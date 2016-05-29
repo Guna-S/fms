@@ -4,12 +4,15 @@ import com.fms.core.converter.CategoryDocTypeConverter;
 import com.fms.core.dto.CategoryDocTypeInfo;
 import com.fms.core.repository.CategoryDocTypeRepository;
 import com.fms.core.service.CategoryDocTypeService;
+import com.fms.core.util.FunctionComposer;
+import com.fms.core.util.Promise;
+import com.fms.core.util.React;
+import javaslang.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
+
 @Component
 public class CategoryDocTypeFacade {
 
@@ -19,47 +22,36 @@ public class CategoryDocTypeFacade {
     @Autowired
     private UploadCategoryFacade facade;
 
-    public CompletableFuture<CategoryDocTypeInfo> save(final CategoryDocTypeInfo info) {
-        return CategoryDocTypeConverter.convert(info)
-            .apply(facade.findByName(info.getUploadCategoryName())).
-                thenComposeAsync(
-                    (categoryDocType) -> CategoryDocTypeService.save(categoryDocType).apply
-                        (repository))
-            .thenComposeAsync(
-                (categoryDocType) ->
-                    CompletableFuture.supplyAsync(() -> CategoryDocTypeConverter.convertTo(categoryDocType)));
+    public Promise<CategoryDocTypeInfo> save(final CategoryDocTypeInfo info) {
+        return React.of(info)
+                .thenWithReact(ci -> CategoryDocTypeConverter.convert(ci).apply(facade.findByName(ci.getUploadCategoryName())))
+                .then(repository::save)
+                .then(CategoryDocTypeConverter::convertTo)
+                .getPromise();
     }
 
-    public CompletableFuture<List<CategoryDocTypeInfo>> findAll() {
-        return CategoryDocTypeService.findAll()
-                                     .apply(repository)
-                                     .thenComposeAsync(categoryDocTypes ->
-                                         CompletableFuture.supplyAsync(() ->
-                                             categoryDocTypes.stream()
-                                                 .map(CategoryDocTypeConverter::convertTo)
-                                                 .collect(Collectors.toList())));
+    public Promise<List<CategoryDocTypeInfo>> findAll() {
+        return React.of(CategoryDocTypeService.findAll().apply(repository))
+                .then(FunctionComposer.asList(CategoryDocTypeConverter::convertTo))
+                .getPromise();
     }
 
-    public CompletableFuture<CategoryDocTypeInfo> find(final Long id) {
-        return CategoryDocTypeService.findById(id)
-                                      .apply(repository)
-                                      .thenComposeAsync(
-                                          categoryDocType -> CompletableFuture.supplyAsync(
-                                              () -> CategoryDocTypeConverter.convertTo(categoryDocType)));
+    public Promise<CategoryDocTypeInfo> find(final Long id) {
+        return React.of(id)
+                .thenWithReact(i -> CategoryDocTypeService.findById(i).apply(repository))
+                .then(CategoryDocTypeConverter::convertTo)
+                .getPromise();
     }
 
-    public CompletableFuture<CategoryDocTypeInfo> update(final Long id, final CategoryDocTypeInfo info) {
-        return CategoryDocTypeConverter.convertWithId(info)
-            .apply(facade.findByName(info.getUploadCategoryName()), id)
-            .thenComposeAsync(
-                (categoryDocType) -> CategoryDocTypeService.update(categoryDocType).apply
-                    (repository))
-            .thenComposeAsync(
-                (categoryDocType) ->
-                    CompletableFuture.supplyAsync(() -> CategoryDocTypeConverter.convertTo(categoryDocType)));
+    public Promise<CategoryDocTypeInfo> update(final Long id, final CategoryDocTypeInfo info) {
+        return React.of(CategoryDocTypeConverter.convertWithId(info).apply(Tuple.of(facade.findByName(info.getUploadCategoryName()), id)))
+                .thenWithReact(categoryDocType -> CategoryDocTypeService.update(categoryDocType).apply(repository))
+                .then(CategoryDocTypeConverter::convertTo)
+                .getPromise();
     }
 
-    public CompletableFuture<Void> delete(final Long id) {
-        return CategoryDocTypeService.delete(id).apply(repository);
+    public Promise<Long> delete(final Long id) {
+        return CategoryDocTypeService.delete(id).apply(repository)
+                .getPromise();
     }
 }

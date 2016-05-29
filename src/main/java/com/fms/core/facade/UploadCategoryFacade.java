@@ -5,12 +5,13 @@ import com.fms.core.dto.UploadCategoryInfo;
 import com.fms.core.model.UploadCategory;
 import com.fms.core.repository.UploadCategoryRepository;
 import com.fms.core.service.UploadCategoryService;
+import com.fms.core.util.FunctionComposer;
+import com.fms.core.util.Promise;
+import com.fms.core.util.React;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 @Component
 public class UploadCategoryFacade {
@@ -23,11 +24,11 @@ public class UploadCategoryFacade {
      * @param id
      * @return
      */
-    public CompletableFuture<UploadCategoryInfo> find(final Long id) {
-        return UploadCategoryService.findById(id)
-            .apply(repository).thenComposeAsync((uc) ->
-                CompletableFuture
-                    .supplyAsync(() -> UploadCategoryConverter.convertTo(uc)));
+    public Promise<UploadCategoryInfo> find(final Long id) {
+        return React.of(UploadCategoryService.findById(id).apply(repository))
+                .then(UploadCategoryConverter::convertTo)
+                .getPromise();
+
     }
 
     /**
@@ -35,8 +36,8 @@ public class UploadCategoryFacade {
      * @param id
      * @return
      */
-    public CompletableFuture<Void> delete(final Long id) {
-        return UploadCategoryService.delete(id).apply(repository);
+    public Promise<Long> delete(final Long id) {
+        return UploadCategoryService.delete(id).apply(repository).getPromise();
     }
 
     /**
@@ -44,14 +45,13 @@ public class UploadCategoryFacade {
      * @param uploadCategoryInfo
      * @return
      */
-    public CompletableFuture<UploadCategoryInfo> save(final UploadCategoryInfo uploadCategoryInfo) {
-        return CompletableFuture.supplyAsync(
-            () -> UploadCategoryConverter.convert(uploadCategoryInfo))
-            .thenComposeAsync(uploadCategory ->
-                UploadCategoryService.save
-                    (uploadCategory).apply(repository))
-            .thenComposeAsync(uc ->
-                CompletableFuture.supplyAsync(() -> UploadCategoryConverter.convertTo(uc)));
+    public Promise<UploadCategoryInfo> save(final UploadCategoryInfo uploadCategoryInfo) {
+        return React.of(uploadCategoryInfo)
+                .then(UploadCategoryConverter::convert)
+                .thenWithReact(uploadCategory -> UploadCategoryService.save
+                        (uploadCategory).apply(repository))
+                .then(UploadCategoryConverter::convertTo)
+                .getPromise();
     }
 
     /**
@@ -60,17 +60,12 @@ public class UploadCategoryFacade {
      * @param uploadCategoryInfo
      * @return
      */
-    public CompletableFuture<UploadCategoryInfo> update(final Long id, final UploadCategoryInfo uploadCategoryInfo) {
-        return CompletableFuture.supplyAsync(
-            () -> UploadCategoryConverter.convertWithId(uploadCategoryInfo, id))
-            .thenComposeAsync(
-                uploadCategory ->
-                    UploadCategoryService.update(uploadCategory)
-                        .apply(repository))
-            .thenComposeAsync(
-                uc ->
-                    CompletableFuture.supplyAsync(() ->
-                        UploadCategoryConverter.convertTo(uc)));
+    public Promise<UploadCategoryInfo> update(final Long id, final UploadCategoryInfo uploadCategoryInfo) {
+
+        return React.of(() -> UploadCategoryConverter.convertWithId(uploadCategoryInfo, id))
+                .thenWithReact(uploadCategory -> UploadCategoryService.update(uploadCategory).apply(repository))
+                .then(UploadCategoryConverter::convertTo)
+                .getPromise();
     }
 
     /**
@@ -78,18 +73,17 @@ public class UploadCategoryFacade {
      * @param name
      * @return
      */
-    public CompletableFuture<UploadCategory> findByName(final String name) {
-        return UploadCategoryService.findByName(name).apply(repository);
+    public Promise<UploadCategory> findByName(final String name) {
+        return UploadCategoryService.findByName(name).apply(repository).getPromise();
     }
 
     /**
      *
      * @return
      */
-    public CompletableFuture<List<UploadCategoryInfo>> findAll() {
-        return UploadCategoryService.findAll().apply(repository)
-            .thenComposeAsync(uploadCategories ->
-                CompletableFuture.supplyAsync(() -> uploadCategories
-                    .stream().map(UploadCategoryConverter::convertTo).collect(Collectors.toList())));
+    public Promise<List<UploadCategoryInfo>> findAll() {
+        return React.of(UploadCategoryService.findAll().apply(repository))
+                .then(FunctionComposer.asList(UploadCategoryConverter::convertTo))
+                .getPromise();
     }
 }

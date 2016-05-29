@@ -58,7 +58,7 @@ public class CategoryDocTypeController {
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public DeferredResult<ResponseEntity<Void>> remove(@PathVariable final Long id) {
+    public DeferredResult<ResponseEntity<Long>> remove(@PathVariable final Long id) {
         return createDeferredResult(facade.delete(id), HttpStatus.OK);
     }
 }
