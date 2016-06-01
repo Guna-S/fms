@@ -1,2 +1,10 @@
 server:
   port: 8090
+
+
+file:
+  rootFolder: D://FMS
+
+info:
+    app.name: File Management System Service
+    build.version: 0.1.0-XXX

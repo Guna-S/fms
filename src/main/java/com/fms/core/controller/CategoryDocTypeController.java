@@ -18,7 +18,7 @@ import static com.fms.core.DeferredResultProvider.createDeferredResult;
 
 @RestController
 @RequestMapping(value = "/fms/categorydoctypes")
-@Api(value = "", description = "CategoryDocTypeController")
+@Api(value = "category doc types", description = "CRUD operations for category doc types")
 public class CategoryDocTypeController {
 
 
@@ -27,7 +27,8 @@ public class CategoryDocTypeController {
 
     @ApiOperation(
         produces = MediaType.APPLICATION_JSON_VALUE,
-        value = "Get All available categories")
+        value = "Get All available category document types",
+        notes = "Get All available category document types")
     @RequestMapping(method = RequestMethod.GET)
     public DeferredResult<ResponseEntity<List<CategoryDocTypeInfo>>> getAllCategories() {
         return createDeferredResult(facade.findAll(), HttpStatus.OK);
@@ -35,7 +36,8 @@ public class CategoryDocTypeController {
 
     @ApiOperation(
         produces = MediaType.APPLICATION_JSON_VALUE,
-        value = "Get All available categories")
+        value = "save category doc type",
+        notes = "save category doc type")
     @RequestMapping(method = RequestMethod.POST)
     public DeferredResult<ResponseEntity<CategoryDocTypeInfo>> save(
         @ApiParam(name = "categoryDocTypeInfo", value = "new category " +
@@ -44,21 +46,39 @@ public class CategoryDocTypeController {
         return createDeferredResult(facade.save(categoryDocTypeInfo), HttpStatus.CREATED);
     }
 
+    @ApiOperation(
+        produces = MediaType.APPLICATION_JSON_VALUE,
+        value = "get category doc type",
+        notes = "get category doc type")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public DeferredResult<ResponseEntity<CategoryDocTypeInfo>> get(@PathVariable final Long id) {
+    public DeferredResult<ResponseEntity<CategoryDocTypeInfo>> get(
+        @ApiParam(name = "categoryId", value = "category id", required = true)
+        @PathVariable final Long id) {
         return createDeferredResult(facade.find(id), HttpStatus.OK);
     }
 
-
+    @ApiOperation(
+        produces = MediaType.APPLICATION_JSON_VALUE,
+        value = "update category doc type with new values",
+        notes = "update category doc type with new values")
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public DeferredResult<ResponseEntity<CategoryDocTypeInfo>> update(@PathVariable final Long id,
+    public DeferredResult<ResponseEntity<CategoryDocTypeInfo>> update(
+        @ApiParam(name = "categoryId", value = "category id", required = true)
+        @PathVariable final Long id,
+        @ApiParam(name = "categoryDocTypeInfo", value = "updated values of category info json", required = true)
         @RequestBody final CategoryDocTypeInfo categoryDocTypeInfo) {
         return createDeferredResult(facade.update(id, categoryDocTypeInfo), HttpStatus.OK);
     }
 
 
+    @ApiOperation(
+        produces = MediaType.APPLICATION_JSON_VALUE,
+        value = "remove the category doc type by id",
+        notes = "remove the category doc type by id")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public DeferredResult<ResponseEntity<Long>> remove(@PathVariable final Long id) {
+    public DeferredResult<ResponseEntity<Long>> remove(
+        @ApiParam(name = "categoryId", value = "category id", required = true)
+        @PathVariable final Long id) {
         return createDeferredResult(facade.delete(id), HttpStatus.OK);
     }
 }

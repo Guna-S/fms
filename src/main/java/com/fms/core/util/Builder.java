@@ -54,6 +54,11 @@ public class Builder<T> {
         return new PropertyAccessor<>(this, property);
     }
 
+    public <V> Builder<T> with(final Function<T, V> getter, final V val) {
+        on(getter).set(val);
+        return this;
+    }
+
 
     public static final class PropertyAccessor<T, V> {
 

@@ -36,8 +36,8 @@ public class FmsPersistenceConfiguration {
         factory.setDataSource(dataSource());
         factory.afterPropertiesSet();
         final Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        properties.setProperty("hibernate.hbm2ddl.import_file", "create.sql");
+        properties.setProperty("hibernate.hbm2ddl.auto", "create");
+        properties.setProperty("hibernate.hbm2ddl.import_files", "create.sql");
         factory.setJpaProperties(properties);
         return factory.getObject();
     }

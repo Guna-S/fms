@@ -18,17 +18,15 @@ import static com.fms.core.DeferredResultProvider.createDeferredResult;
 
 @RestController
 @RequestMapping(value = "/fms/categories")
-@Api(value = "", description = "UploadCategoryController")
+@Api(value = "upload category", description = "UploadCategoryController")
 public class UploadCategoryController {
-
 
     @Autowired
     private UploadCategoryFacade facade;
 
-
     @ApiOperation(
         produces = MediaType.APPLICATION_JSON_VALUE,
-        value = "Get All available categories")
+        value = "Get All available upload categories")
     @RequestMapping(method = RequestMethod.GET)
     public DeferredResult<ResponseEntity<List<UploadCategoryInfo>>> getAllCategories() {
         return createDeferredResult(facade.findAll(), HttpStatus.OK);
@@ -36,7 +34,7 @@ public class UploadCategoryController {
 
     @ApiOperation(
         produces = MediaType.APPLICATION_JSON_VALUE,
-        value = "Get All available categories")
+        value = "")
     @RequestMapping(method = RequestMethod.POST)
     public DeferredResult<ResponseEntity<UploadCategoryInfo>> save(
                                                      @ApiParam(name = "uploadCategoryInfo", value = "new category " +

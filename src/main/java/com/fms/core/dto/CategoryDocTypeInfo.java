@@ -1,5 +1,7 @@
 package com.fms.core.dto;
 
+import com.fms.core.util.Builder;
+
 import java.io.Serializable;
 
 public class CategoryDocTypeInfo implements Serializable {
@@ -11,12 +13,6 @@ public class CategoryDocTypeInfo implements Serializable {
     private String id;
 
     public CategoryDocTypeInfo() {
-    }
-
-    public CategoryDocTypeInfo(final String type, final String uploadCategoryName, final String desc) {
-        this.type = type;
-        this.uploadCategoryName = uploadCategoryName;
-        this.desc = desc;
     }
 
     public String getId() {
@@ -37,5 +33,9 @@ public class CategoryDocTypeInfo implements Serializable {
 
     public String getDesc() {
         return desc;
+    }
+
+    public static Builder<CategoryDocTypeInfo> builder() {
+        return Builder.of(CategoryDocTypeInfo.class);
     }
 }

@@ -1,17 +1,15 @@
 package com.fms.core.util;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
-/**
- * Created by Ganesan on 29/05/16.
- */
 public interface TwoTrack<T> {
 
-    static <T>  TwoTrack<T> of(T val) {
+    static <T> TwoTrack<T> of(final T val) {
         return new SuccessTrack<>(val);
     }
 
-    static <T>  TwoTrack<T> of(ErrorCode error) {
+    static <T> TwoTrack<T> of(final ErrorCode error) {
         return new FailureTrack<>(error);
     }
 
@@ -19,15 +17,18 @@ public interface TwoTrack<T> {
 
     ErrorCode getErrorCode();
 
-    boolean isSuccess() ;
+    boolean isSuccess();
 
     <R> TwoTrack<R> map(Function<T, R> function);
+
+    void onSuccess(Consumer<T> success);
+    void onFailure(Consumer<ErrorCode> failure);
 
     class SuccessTrack<T> implements TwoTrack<T> {
 
         private final T val;
 
-        private SuccessTrack(T val){
+        private SuccessTrack(final T val) {
             this.val = val;
         }
 
@@ -47,8 +48,18 @@ public interface TwoTrack<T> {
         }
 
         @Override
-        public <R> TwoTrack<R> map(Function<T, R> function) {
+        public <R> TwoTrack<R> map(final Function<T, R> function) {
             return TwoTrack.of(function.apply(get()));
+        }
+
+        @Override
+        public void onSuccess(final Consumer<T> success) {
+            success.accept(val);
+        }
+
+        @Override
+        public void onFailure(final Consumer<ErrorCode> success) {
+
         }
 
 
@@ -58,7 +69,7 @@ public interface TwoTrack<T> {
 
         private final ErrorCode errorCode;
 
-        private FailureTrack(ErrorCode errorCode){
+        private FailureTrack(final ErrorCode errorCode) {
             this.errorCode = errorCode;
         }
 
@@ -78,8 +89,18 @@ public interface TwoTrack<T> {
         }
 
         @Override
-        public <R> TwoTrack<R> map(Function<T, R> function) {
+        public <R> TwoTrack<R> map(final Function<T, R> function) {
             return TwoTrack.of(errorCode);
+        }
+
+        @Override
+        public void onSuccess(final Consumer<T> success) {
+
+        }
+
+        @Override
+        public void onFailure(final Consumer<ErrorCode> failure) {
+            failure.accept(errorCode);
         }
     }
 

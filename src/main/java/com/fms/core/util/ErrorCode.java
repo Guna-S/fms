@@ -1,7 +1,17 @@
 package com.fms.core.util;
 
-/**
- * Created by Ganesan on 29/05/16.
- */
 public enum ErrorCode {
+
+    FILE_WRTING_FAILED("FMS_0002");
+
+    ErrorCode(final String status) {
+        this.status = status;
+
+    }
+
+    private final String status;
+
+    public String getStatus() {
+        return status;
+    }
 }

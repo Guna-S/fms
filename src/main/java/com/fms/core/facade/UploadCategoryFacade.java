@@ -5,7 +5,7 @@ import com.fms.core.dto.UploadCategoryInfo;
 import com.fms.core.model.UploadCategory;
 import com.fms.core.repository.UploadCategoryRepository;
 import com.fms.core.service.UploadCategoryService;
-import com.fms.core.util.FunctionComposer;
+import com.fms.core.util.FunctionUtils;
 import com.fms.core.util.Promise;
 import com.fms.core.util.React;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +20,17 @@ public class UploadCategoryFacade {
     private UploadCategoryRepository repository;
 
     /**
-     *
      * @param id
      * @return
      */
     public Promise<UploadCategoryInfo> find(final Long id) {
         return React.of(UploadCategoryService.findById(id).apply(repository))
-                .then(UploadCategoryConverter::convertTo)
-                .getPromise();
+            .then(UploadCategoryConverter::convertTo)
+            .getPromise();
 
     }
 
     /**
-     *
      * @param id
      * @return
      */
@@ -41,21 +39,19 @@ public class UploadCategoryFacade {
     }
 
     /**
-     *
      * @param uploadCategoryInfo
      * @return
      */
     public Promise<UploadCategoryInfo> save(final UploadCategoryInfo uploadCategoryInfo) {
         return React.of(uploadCategoryInfo)
-                .then(UploadCategoryConverter::convert)
-                .thenWithReact(uploadCategory -> UploadCategoryService.save
-                        (uploadCategory).apply(repository))
-                .then(UploadCategoryConverter::convertTo)
-                .getPromise();
+            .then(UploadCategoryConverter::convert)
+            .thenWithReact(uploadCategory -> UploadCategoryService.save
+                (uploadCategory).apply(repository))
+            .then(UploadCategoryConverter::convertTo)
+            .getPromise();
     }
 
     /**
-     *
      * @param id
      * @param uploadCategoryInfo
      * @return
@@ -63,13 +59,12 @@ public class UploadCategoryFacade {
     public Promise<UploadCategoryInfo> update(final Long id, final UploadCategoryInfo uploadCategoryInfo) {
 
         return React.of(() -> UploadCategoryConverter.convertWithId(uploadCategoryInfo, id))
-                .thenWithReact(uploadCategory -> UploadCategoryService.update(uploadCategory).apply(repository))
-                .then(UploadCategoryConverter::convertTo)
-                .getPromise();
+            .thenWithReact(uploadCategory -> UploadCategoryService.update(uploadCategory).apply(repository))
+            .then(UploadCategoryConverter::convertTo)
+            .getPromise();
     }
 
     /**
-     *
      * @param name
      * @return
      */
@@ -78,12 +73,11 @@ public class UploadCategoryFacade {
     }
 
     /**
-     *
      * @return
      */
     public Promise<List<UploadCategoryInfo>> findAll() {
         return React.of(UploadCategoryService.findAll().apply(repository))
-                .then(FunctionComposer.asList(UploadCategoryConverter::convertTo))
-                .getPromise();
+            .then(FunctionUtils.asList(UploadCategoryConverter::convertTo))
+            .getPromise();
     }
 }
