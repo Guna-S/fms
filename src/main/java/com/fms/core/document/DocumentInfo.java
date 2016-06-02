@@ -48,4 +48,12 @@ public class DocumentInfo implements Serializable {
     public static Builder<DocumentInfo> builder(final DocumentInfo info) {
         return Builder.of(DocumentInfo.class, info);
     }
+
+    public static Builder<DocumentInfo> builder(final UploadInfo info) {
+        return builder()
+                .with(DocumentInfo::getDocumentTypeId, info.getDocumentTypeId())
+                .with(DocumentInfo::getFileInfo, info.getFileInfo())
+                .with(DocumentInfo::getFileName, info.getFileName())
+                .with(DocumentInfo::getUploaderId, info.getUploaderId());
+    }
 }

@@ -7,10 +7,16 @@ public class ErrorCodeAndParam {
 
     private final ErrorCode errorCode;
     private final String[] params;
+    private final Throwable cause;
 
-    public ErrorCodeAndParam(ErrorCode errorCode, String... params) {
+    public ErrorCodeAndParam(Throwable cause, ErrorCode errorCode, String... params) {
         this.errorCode = errorCode;
         this.params = params;
+        this.cause = cause;
+    }
+
+    public Throwable getCause() {
+        return cause;
     }
 
     public ErrorCode getErrorCode() {

@@ -14,11 +14,11 @@ public class DocumentFacade {
 
 
     public static Reader<DocumentConfig, Promise<TwoTrack<DocumentInfo>>> save(final
-    DocumentInfo documentInfo) {
-        return Reader.of(config -> React.of(() -> documentInfo)
+    UploadInfo uploadInfo) {
+        return Reader.of(config -> React.of(() -> uploadInfo)
             .thenP(info -> CategoryDocTypeFacade.findCategoryDocType
                 (info.getDocumentTypeId()).with(config.getCategoryDocTypeRepository()))
-            .then(cdt -> Tuple.of(DocumentUtil.getDocumentWithFileLocation(documentInfo).apply(Tuple.of(config.getRootFolder(),
+            .then(cdt -> Tuple.of(DocumentUtil.getDocumentWithFileLocation(uploadInfo).apply(Tuple.of(config.getRootFolder(),
                 cdt)), cdt))
             .then(tuple -> DocumentConverter.convert(tuple._1).apply(tuple._2))
             .then(document -> config.getFileWriter().apply(document))

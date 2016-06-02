@@ -7,6 +7,8 @@ import com.fms.core.common.TwoTrack;
 import com.fms.core.model.DocumentModel;
 import javaslang.Tuple2;
 import javaslang.control.Try;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -20,6 +22,12 @@ import java.util.stream.Stream;
 public class DocumentUtil {
 
     public static Function<Tuple2<String, CategoryDocType>, DocumentInfo> getDocumentWithFileLocation(
+            final UploadInfo info) {
+        return getDocumentWithFileLocation(DocumentInfo.builder(info).build());
+
+    }
+
+    public static Function<Tuple2<String, CategoryDocType>, DocumentInfo> getDocumentWithFileLocation(
             final DocumentInfo info) {
         return (tuple) -> DocumentConverter.build(info).apply(Stream.of(tuple._1,
                 tuple._2.getUploadCategory().getName(),
@@ -29,10 +37,10 @@ public class DocumentUtil {
 
     }
 
-    public static Function<DocumentModel, TwoTrack<DocumentModel>> fileWritter(final com.fms.core.document.Document document) {
-        return (doc) -> Try.of(() -> document.getFile().getInputStream())
+    public static Function<DocumentModel, TwoTrack<DocumentModel>> fileWritter(MultipartFile file) {
+        return (doc) -> Try.of(() -> file.getInputStream())
                 .mapTry(is -> Files.copy(is, Paths.get(doc.getFileLocation())))
                 .mapTry(l -> TwoTrack.of(doc))
-                .getOrElseGet((e) -> TwoTrack.of(new ErrorCodeAndParam(ErrorCode.FILE_WRTING_FAILED)));
+                .getOrElseGet((e) -> TwoTrack.of(new ErrorCodeAndParam(e, ErrorCode.FILE_WRTING_FAILED)));
     }
 }

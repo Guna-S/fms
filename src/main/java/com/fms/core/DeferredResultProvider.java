@@ -14,7 +14,7 @@ public class DeferredResultProvider {
         final DeferredResult<ResponseEntity<T>> deferredResult = new DeferredResult<>();
         task.success((t) -> {
             t.onSuccess(v -> deferredResult.setResult(new ResponseEntity<>(v, httpStatus)));
-            t.onFailure(e -> deferredResult.setErrorResult(e.getErrorCode().getStatus()));
+            t.onFailure(e -> deferredResult.setErrorResult(e));
         }).failure(deferredResult::setErrorResult);
         return deferredResult;
     }

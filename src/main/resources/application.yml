@@ -1,9 +1,8 @@
 server:
   port: 8090
 
-
 file:
-  rootFolder: D://FMS
+  rootFolder: /Users/Ganesan/Work/Assay/FMS
 
 info:
     app.name: File Management System Service

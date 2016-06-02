@@ -7,11 +7,14 @@ import com.fms.core.config.FmsConfig;
 import com.fms.core.document.DocumentConfig;
 import com.fms.core.document.Document;
 import com.fms.core.document.DocumentInfo;
+import com.fms.core.document.UploadInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.util.List;
 
@@ -25,14 +28,14 @@ public class DocumentController {
     @Autowired
     private FmsConfig fmsConfig;
 
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public DeferredResult<ResponseEntity<DocumentInfo>> upload(@RequestBody final Document document) {
+    @RequestMapping(value = "/upload", method = RequestMethod.POST, headers="Content-Type=multipart/form-data")
+    public DeferredResult<ResponseEntity<DocumentInfo>> upload(@RequestParam("file") MultipartFile file, @RequestPart("docinfo") UploadInfo docInfo) {
         return createDeferredResultTwoTrack(
-            save(document.getDocumentInfo())
+            save(docInfo)
             .with(DocumentConfig
                     .builder()
                     .with(DocumentConfig::getFmsConfig, fmsConfig)
-                    .with(DocumentConfig::getFileWriter, fileWritter(document))
+                    .with(DocumentConfig::getFileWriter, fileWritter(file))
                     .build()), HttpStatus.ACCEPTED);
     }
 

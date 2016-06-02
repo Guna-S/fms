@@ -16,7 +16,6 @@ public class DocumentConfig {
 
     private FmsConfig fmsConfig;
     private Function<DocumentModel, TwoTrack<DocumentModel>> fileWriter;
-    private String rootFolder;
 
     public DocumentRepository getDocumentRepository() {
         return fmsConfig.getDocumentRepository();
@@ -31,7 +30,7 @@ public class DocumentConfig {
     }
 
     public String getRootFolder() {
-        return rootFolder;
+        return fmsConfig.getRootFolder();
     }
 
     public FmsConfig getFmsConfig() {
