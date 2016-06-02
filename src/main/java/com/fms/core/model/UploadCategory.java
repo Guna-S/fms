@@ -1,6 +1,6 @@
 package com.fms.core.model;
 
-import com.fms.core.util.Builder;
+import com.fms.core.common.Builder;
 
 import javax.persistence.*;
 

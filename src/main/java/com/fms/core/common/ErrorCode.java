@@ -1,4 +1,4 @@
-package com.fms.core.util;
+package com.fms.core.common;
 
 public enum ErrorCode {
 

@@ -1,6 +1,6 @@
 package com.fms.core.model;
 
-import com.fms.core.util.Builder;
+import com.fms.core.common.Builder;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Table(name = "FMS_TR_UPLOADED_DOCS", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"UD_DOC_ID", "UD_CD_ID"})
 })
-public class Document implements Serializable {
+public class DocumentModel implements Serializable {
 
     private static final long serialVersionUID = 3508481074333082181L;
 
@@ -59,7 +59,7 @@ public class Document implements Serializable {
         return fileLocation;
     }
 
-    public static Builder<Document> builder() {
-        return Builder.of(Document.class);
+    public static Builder<DocumentModel> builder() {
+        return Builder.of(DocumentModel.class);
     }
 }

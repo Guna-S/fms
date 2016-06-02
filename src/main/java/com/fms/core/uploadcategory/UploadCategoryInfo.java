@@ -1,4 +1,4 @@
-package com.fms.core.dto;
+package com.fms.core.uploadcategory;
 
 import java.io.Serializable;
 

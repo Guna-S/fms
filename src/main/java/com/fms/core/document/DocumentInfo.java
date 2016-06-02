@@ -1,7 +1,7 @@
-package com.fms.core.dto;
+package com.fms.core.document;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fms.core.util.Builder;
+import com.fms.core.common.Builder;
 
 import java.io.Serializable;
 

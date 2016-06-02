@@ -1,6 +1,6 @@
-package com.fms.core.dto;
+package com.fms.core.document;
 
-import com.fms.core.util.Builder;
+import com.fms.core.common.Builder;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**

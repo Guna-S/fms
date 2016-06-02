@@ -1,4 +1,4 @@
-package com.fms.core.util;
+package com.fms.core.common;
 
 import static java.util.concurrent.CompletableFuture.*;
 import java.util.concurrent.CompletableFuture;
@@ -7,6 +7,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
+ *
+ * A monad Reactive sequential execution of functions
+ *
  * Created by Ganesan on 29/05/16.
  */
 public class React<T> {
@@ -17,8 +20,12 @@ public class React<T> {
         this.completableFuture = completableFuture;
     }
 
+    public static <T> React<T> of(T t) {
+        return of(completedFuture(t));
+    }
+
     public static <T> React<T> of(React<T> t) {
-        return new React<>(t.get());
+        return of(t.get());
     }
 
     public static <T> React<T> of(Supplier<T> t) {
@@ -30,7 +37,11 @@ public class React<T> {
     }
 
     public static <T> React<T> of(Promise<T> t) {
-        return new React<>(t.getFuture());
+        return of(t.getFuture());
+    }
+
+    public <U> React<U> then(Do<T, U> doNext) {
+        return then(doNext.get());
     }
 
     public <U> React<U> then(Function<T, U> function) {
@@ -41,8 +52,12 @@ public class React<T> {
         return then(t -> { function.accept(t); return t; });
     }
 
+    public React<Void> thenVoid(Consumer<T> function) {
+        return then(t -> { function.accept(t); return null; });
+    }
+
     public <U> React<U> thenCF(Function<T, CompletableFuture<U>> function) {
-        return new React<>(completableFuture.thenComposeAsync(t -> function.apply(t)));
+        return new React<>(completableFuture.thenCompose(t -> function.apply(t)));
     }
 
     public <U> React<U> thenR(Function<T, React<U>> function) {

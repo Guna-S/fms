@@ -1,4 +1,4 @@
-package com.fms.core.util;
+package com.fms.core.common;
 
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;

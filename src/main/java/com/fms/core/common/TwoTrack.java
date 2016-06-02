@@ -1,4 +1,4 @@
-package com.fms.core.util;
+package com.fms.core.common;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -9,20 +9,20 @@ public interface TwoTrack<T> {
         return new SuccessTrack<>(val);
     }
 
-    static <T> TwoTrack<T> of(final ErrorCode error) {
+    static <T> TwoTrack<T> of(final ErrorCodeAndParam error) {
         return new FailureTrack<>(error);
     }
 
     T get();
 
-    ErrorCode getErrorCode();
+    ErrorCodeAndParam getErrorCode();
 
     boolean isSuccess();
 
     <R> TwoTrack<R> map(Function<T, R> function);
 
     void onSuccess(Consumer<T> success);
-    void onFailure(Consumer<ErrorCode> failure);
+    void onFailure(Consumer<ErrorCodeAndParam> failure);
 
     class SuccessTrack<T> implements TwoTrack<T> {
 
@@ -38,7 +38,7 @@ public interface TwoTrack<T> {
         }
 
         @Override
-        public ErrorCode getErrorCode() {
+        public ErrorCodeAndParam getErrorCode() {
             return null;
         }
 
@@ -58,7 +58,7 @@ public interface TwoTrack<T> {
         }
 
         @Override
-        public void onFailure(final Consumer<ErrorCode> success) {
+        public void onFailure(final Consumer<ErrorCodeAndParam> success) {
 
         }
 
@@ -67,9 +67,9 @@ public interface TwoTrack<T> {
 
     class FailureTrack<T> implements TwoTrack<T> {
 
-        private final ErrorCode errorCode;
+        private final ErrorCodeAndParam errorCode;
 
-        private FailureTrack(final ErrorCode errorCode) {
+        private FailureTrack(final ErrorCodeAndParam errorCode) {
             this.errorCode = errorCode;
         }
 
@@ -79,7 +79,7 @@ public interface TwoTrack<T> {
         }
 
         @Override
-        public ErrorCode getErrorCode() {
+        public ErrorCodeAndParam getErrorCode() {
             return errorCode;
         }
 
@@ -99,7 +99,7 @@ public interface TwoTrack<T> {
         }
 
         @Override
-        public void onFailure(final Consumer<ErrorCode> failure) {
+        public void onFailure(final Consumer<ErrorCodeAndParam> failure) {
             failure.accept(errorCode);
         }
     }

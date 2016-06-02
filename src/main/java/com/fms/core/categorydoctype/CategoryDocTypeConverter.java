@@ -1,13 +1,11 @@
-package com.fms.core.converter;
+package com.fms.core.categorydoctype;
 
-import com.fms.core.dto.CategoryDocTypeInfo;
 import com.fms.core.model.CategoryDocType;
 import com.fms.core.model.UploadCategory;
-import com.fms.core.util.React;
+import com.fms.core.common.React;
 import javaslang.Tuple2;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class CategoryDocTypeConverter {
 

@@ -1,6 +1,6 @@
-package com.fms.core.dto;
+package com.fms.core.categorydoctype;
 
-import com.fms.core.util.Builder;
+import com.fms.core.common.Builder;
 
 import java.io.Serializable;
 

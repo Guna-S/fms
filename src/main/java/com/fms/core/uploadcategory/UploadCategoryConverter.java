@@ -1,6 +1,5 @@
-package com.fms.core.converter;
+package com.fms.core.uploadcategory;
 
-import com.fms.core.dto.UploadCategoryInfo;
 import com.fms.core.model.UploadCategory;
 
 public class UploadCategoryConverter {

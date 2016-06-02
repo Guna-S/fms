@@ -1,9 +1,8 @@
 package com.fms.core.controller;
 
-import static com.fms.core.facade.UploadCategoryFacade.*;
+import static com.fms.core.uploadcategory.UploadCategoryFacade.*;
 
-import com.fms.core.config.FmsConfig;
-import com.fms.core.dto.UploadCategoryInfo;
+import com.fms.core.uploadcategory.UploadCategoryInfo;
 
 import com.fms.core.repository.UploadCategoryRepository;
 import io.swagger.annotations.Api;
@@ -33,7 +32,8 @@ public class UploadCategoryController {
         value = "Get All available upload categories")
     @RequestMapping(method = RequestMethod.GET)
     public DeferredResult<ResponseEntity<List<UploadCategoryInfo>>> getAllCategories() {
-        return createDeferredResult(findAll().apply(repository), HttpStatus.OK);
+        return createDeferredResult(findAll()
+                .with(repository), HttpStatus.OK);
     }
 
     @ApiOperation(
@@ -44,24 +44,24 @@ public class UploadCategoryController {
                                                      @ApiParam(name = "uploadCategoryInfo", value = "new category " +
                                                          "info json", required = true)
                                                      @RequestBody final UploadCategoryInfo uploadCategoryInfo) {
-        return createDeferredResult(save(uploadCategoryInfo).apply(repository), HttpStatus.CREATED);
+        return createDeferredResult(save(uploadCategoryInfo).with(repository), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public DeferredResult<ResponseEntity<UploadCategoryInfo>> get(@PathVariable final Long id) {
-        return createDeferredResult(find(id).apply(repository), HttpStatus.OK);
+        return createDeferredResult(find(id).with(repository), HttpStatus.OK);
     }
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public DeferredResult<ResponseEntity<UploadCategoryInfo>> updateCategorry(@PathVariable final Long id,
         @RequestBody final UploadCategoryInfo uploadCategoryInfo) {
-        return createDeferredResult(update(id, uploadCategoryInfo).apply(repository), HttpStatus.OK);
+        return createDeferredResult(update(id, uploadCategoryInfo).with(repository), HttpStatus.OK);
     }
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public DeferredResult<ResponseEntity<Long>> remove(@PathVariable final Long id) {
-        return createDeferredResult(delete(id).apply(repository), HttpStatus.OK);
+        return createDeferredResult(delete(id).with(repository), HttpStatus.OK);
     }
 }

@@ -1,8 +1,8 @@
 package com.fms.core;
 
-import com.fms.core.util.Promise;
-import com.fms.core.util.React;
-import com.fms.core.util.TwoTrack;
+import com.fms.core.common.Promise;
+import com.fms.core.common.React;
+import com.fms.core.common.TwoTrack;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -14,7 +14,7 @@ public class DeferredResultProvider {
         final DeferredResult<ResponseEntity<T>> deferredResult = new DeferredResult<>();
         task.success((t) -> {
             t.onSuccess(v -> deferredResult.setResult(new ResponseEntity<>(v, httpStatus)));
-            t.onFailure(e -> deferredResult.setErrorResult(e.getStatus()));
+            t.onFailure(e -> deferredResult.setErrorResult(e.getErrorCode().getStatus()));
         }).failure(deferredResult::setErrorResult);
         return deferredResult;
     }

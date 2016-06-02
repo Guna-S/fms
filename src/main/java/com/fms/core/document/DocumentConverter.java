@@ -1,16 +1,15 @@
-package com.fms.core.converter;
+package com.fms.core.document;
 
-import com.fms.core.dto.DocumentInfo;
 import com.fms.core.model.CategoryDocType;
-import com.fms.core.model.Document;
+import com.fms.core.model.DocumentModel;
 
 import java.util.function.Function;
 
 public class DocumentConverter {
 
-    public static Function<CategoryDocType, Document> convert(
+    public static Function<CategoryDocType, DocumentModel> convert(
         final DocumentInfo info) {
-        return cdt -> Document.builder()
+        return cdt -> DocumentModel.builder()
             .on(d -> d.getCategoryDocType())
             .set(cdt)
             .on(d -> d.getDocumentUploaderId())
@@ -24,7 +23,7 @@ public class DocumentConverter {
             .build();
     }
 
-    public static DocumentInfo convertTo(final Document doc) {
+    public static DocumentInfo convertTo(final DocumentModel doc) {
         return DocumentInfo.builder()
             .with(d -> d.getId(),doc.getId())
             .on(d -> d.getDocumentTypeId())
