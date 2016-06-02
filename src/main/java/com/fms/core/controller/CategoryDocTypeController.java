@@ -1,7 +1,10 @@
 package com.fms.core.controller;
 
+import static com.fms.core.facade.CategoryDocTypeFacade.*;
+
+import com.fms.core.config.FmsConfig;
 import com.fms.core.dto.CategoryDocTypeInfo;
-import com.fms.core.facade.CategoryDocTypeFacade;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -23,7 +26,7 @@ public class CategoryDocTypeController {
 
 
     @Autowired
-    private CategoryDocTypeFacade facade;
+    private FmsConfig config;
 
     @ApiOperation(
         produces = MediaType.APPLICATION_JSON_VALUE,
@@ -31,7 +34,7 @@ public class CategoryDocTypeController {
         notes = "Get All available category document types")
     @RequestMapping(method = RequestMethod.GET)
     public DeferredResult<ResponseEntity<List<CategoryDocTypeInfo>>> getAllCategories() {
-        return createDeferredResult(facade.findAll(), HttpStatus.OK);
+        return createDeferredResult(findAll().apply(config.getCategoryDocTypeRepository()), HttpStatus.OK);
     }
 
     @ApiOperation(
@@ -39,11 +42,11 @@ public class CategoryDocTypeController {
         value = "save category doc type",
         notes = "save category doc type")
     @RequestMapping(method = RequestMethod.POST)
-    public DeferredResult<ResponseEntity<CategoryDocTypeInfo>> save(
+    public DeferredResult<ResponseEntity<CategoryDocTypeInfo>> saveCDT(
         @ApiParam(name = "categoryDocTypeInfo", value = "new category " +
             "info json", required = true)
         @RequestBody final CategoryDocTypeInfo categoryDocTypeInfo) {
-        return createDeferredResult(facade.save(categoryDocTypeInfo), HttpStatus.CREATED);
+        return createDeferredResult(save(categoryDocTypeInfo).apply(config), HttpStatus.CREATED);
     }
 
     @ApiOperation(
@@ -54,7 +57,7 @@ public class CategoryDocTypeController {
     public DeferredResult<ResponseEntity<CategoryDocTypeInfo>> get(
         @ApiParam(name = "categoryId", value = "category id", required = true)
         @PathVariable final Long id) {
-        return createDeferredResult(facade.find(id), HttpStatus.OK);
+        return createDeferredResult(find(id).apply(config.getCategoryDocTypeRepository()), HttpStatus.OK);
     }
 
     @ApiOperation(
@@ -62,12 +65,12 @@ public class CategoryDocTypeController {
         value = "update category doc type with new values",
         notes = "update category doc type with new values")
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public DeferredResult<ResponseEntity<CategoryDocTypeInfo>> update(
+    public DeferredResult<ResponseEntity<CategoryDocTypeInfo>> updateCDT(
         @ApiParam(name = "categoryId", value = "category id", required = true)
         @PathVariable final Long id,
         @ApiParam(name = "categoryDocTypeInfo", value = "updated values of category info json", required = true)
         @RequestBody final CategoryDocTypeInfo categoryDocTypeInfo) {
-        return createDeferredResult(facade.update(id, categoryDocTypeInfo), HttpStatus.OK);
+        return createDeferredResult(update(id, categoryDocTypeInfo).apply(config), HttpStatus.OK);
     }
 
 
@@ -79,6 +82,6 @@ public class CategoryDocTypeController {
     public DeferredResult<ResponseEntity<Long>> remove(
         @ApiParam(name = "categoryId", value = "category id", required = true)
         @PathVariable final Long id) {
-        return createDeferredResult(facade.delete(id), HttpStatus.OK);
+        return createDeferredResult(delete(id).apply(config.getCategoryDocTypeRepository()), HttpStatus.OK);
     }
 }

@@ -1,7 +1,11 @@
 package com.fms.core.controller;
 
+import static com.fms.core.facade.UploadCategoryFacade.*;
+
+import com.fms.core.config.FmsConfig;
 import com.fms.core.dto.UploadCategoryInfo;
-import com.fms.core.facade.UploadCategoryFacade;
+
+import com.fms.core.repository.UploadCategoryRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -22,42 +26,42 @@ import static com.fms.core.DeferredResultProvider.createDeferredResult;
 public class UploadCategoryController {
 
     @Autowired
-    private UploadCategoryFacade facade;
+    private UploadCategoryRepository repository;
 
     @ApiOperation(
         produces = MediaType.APPLICATION_JSON_VALUE,
         value = "Get All available upload categories")
     @RequestMapping(method = RequestMethod.GET)
     public DeferredResult<ResponseEntity<List<UploadCategoryInfo>>> getAllCategories() {
-        return createDeferredResult(facade.findAll(), HttpStatus.OK);
+        return createDeferredResult(findAll().apply(repository), HttpStatus.OK);
     }
 
     @ApiOperation(
         produces = MediaType.APPLICATION_JSON_VALUE,
         value = "")
     @RequestMapping(method = RequestMethod.POST)
-    public DeferredResult<ResponseEntity<UploadCategoryInfo>> save(
+    public DeferredResult<ResponseEntity<UploadCategoryInfo>> saveCategory(
                                                      @ApiParam(name = "uploadCategoryInfo", value = "new category " +
                                                          "info json", required = true)
                                                      @RequestBody final UploadCategoryInfo uploadCategoryInfo) {
-        return createDeferredResult(facade.save(uploadCategoryInfo), HttpStatus.CREATED);
+        return createDeferredResult(save(uploadCategoryInfo).apply(repository), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public DeferredResult<ResponseEntity<UploadCategoryInfo>> get(@PathVariable final Long id) {
-        return createDeferredResult(facade.find(id), HttpStatus.OK);
+        return createDeferredResult(find(id).apply(repository), HttpStatus.OK);
     }
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public DeferredResult<ResponseEntity<UploadCategoryInfo>> update(@PathVariable final Long id,
+    public DeferredResult<ResponseEntity<UploadCategoryInfo>> updateCategorry(@PathVariable final Long id,
         @RequestBody final UploadCategoryInfo uploadCategoryInfo) {
-        return createDeferredResult(facade.update(id, uploadCategoryInfo), HttpStatus.OK);
+        return createDeferredResult(update(id, uploadCategoryInfo).apply(repository), HttpStatus.OK);
     }
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public DeferredResult<ResponseEntity<Long>> remove(@PathVariable final Long id) {
-        return createDeferredResult(facade.delete(id), HttpStatus.OK);
+        return createDeferredResult(delete(id).apply(repository), HttpStatus.OK);
     }
 }

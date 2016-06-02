@@ -34,4 +34,8 @@ public final class Promise<T> {
         return future;
     }
 
+    public CompletableFuture<T> getFuture(){
+        return future;
+    }
+
 }

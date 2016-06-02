@@ -7,13 +7,14 @@ import com.fms.core.util.React;
 import javaslang.Tuple2;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class CategoryDocTypeConverter {
 
-    public static Function<React<UploadCategory>, React<CategoryDocType>> convert(
+    public static Function<UploadCategory, React<CategoryDocType>> convert(
         final CategoryDocTypeInfo source) {
-        return (react) -> React
-            .of(react)
+        return category -> React
+            .of(() -> category)
             .then(uc -> CategoryDocType.builder()
                 .with(c -> c.getDesc(), source.getDesc())
                 .with(c -> c.getType(), source.getType())
@@ -35,7 +36,7 @@ public class CategoryDocTypeConverter {
             .build();
     }
 
-    public static Function<Tuple2<React<UploadCategory>, Long>, React<CategoryDocType>> convertWithId(
+    public static Function<Tuple2<UploadCategory, Long>, React<CategoryDocType>> convertWithId(
         final CategoryDocTypeInfo source) {
         return (tuple) -> React
             .of(convert(source).apply(tuple._1))

@@ -1,8 +1,11 @@
 package com.fms.core.controller;
 
+import static com.fms.core.facade.DocumentFacade.*;
+
+import com.fms.core.config.FmsConfig;
 import com.fms.core.dto.Document;
 import com.fms.core.dto.DocumentInfo;
-import com.fms.core.facade.DocumentFacade;
+import javaslang.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,22 +22,22 @@ import static com.fms.core.DeferredResultProvider.createDeferredResultTwoTrack;
 public class DocumentController {
 
     @Autowired
-    private DocumentFacade facade;
+    private FmsConfig config;
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public DeferredResult<ResponseEntity<DocumentInfo>> upload(@RequestBody final Document document) {
         return createDeferredResultTwoTrack(
-            facade.save(document.getDocumentInfo())
-            .apply(DocumentFacade.fileWritter(document)), HttpStatus.ACCEPTED);
+            save(document.getDocumentInfo())
+            .apply(Tuple.of(config, fileWritter(document))), HttpStatus.ACCEPTED);
     }
 
     @RequestMapping(value = "/documents", method = RequestMethod.GET)
-    public DeferredResult<ResponseEntity<List<DocumentInfo>>> documents(@RequestBody final String uploaderId) {
-        return createDeferredResult(facade.documents(uploaderId), HttpStatus.FOUND);
+    public DeferredResult<ResponseEntity<List<DocumentInfo>>> getAllDocuments(@RequestBody final String uploaderId) {
+        return createDeferredResult(documents(uploaderId).apply(config), HttpStatus.FOUND);
     }
 
     @RequestMapping(value = "/delete/{docId}",method = RequestMethod.DELETE)
     public DeferredResult<ResponseEntity<Long>> remove(@PathVariable final Long id){
-        return createDeferredResult(facade.removeFile(id),HttpStatus.OK);
+        return createDeferredResult(removeFile(id).apply(config),HttpStatus.OK);
     }
 }

@@ -1,68 +1,71 @@
 package com.fms.core.facade;
 
+import static com.fms.core.util.FunctionUtils.*;
+import static com.fms.core.facade.UploadCategoryFacade.*;
+
+import com.fms.core.config.FmsConfig;
 import com.fms.core.converter.CategoryDocTypeConverter;
 import com.fms.core.dto.CategoryDocTypeInfo;
 import com.fms.core.model.CategoryDocType;
+import com.fms.core.model.UploadCategory;
 import com.fms.core.repository.CategoryDocTypeRepository;
-import com.fms.core.service.CategoryDocTypeService;
-import com.fms.core.util.FunctionUtils;
+
 import com.fms.core.util.Promise;
 import com.fms.core.util.React;
 import javaslang.Tuple;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.function.Function;
 
-@Component
 public class CategoryDocTypeFacade {
 
-    @Autowired
-    private CategoryDocTypeRepository repository;
 
-    @Autowired
-    private UploadCategoryFacade facade;
-
-    public Promise<CategoryDocTypeInfo> save(final CategoryDocTypeInfo info) {
-        return React.of(info)
-            .thenWithReact(
-                ci -> CategoryDocTypeConverter.convert(ci).apply(React.of(facade.findByName(ci.getUploadCategoryName
-                    ()).get())))
-            .thenWithReact(ci -> CategoryDocTypeService.save(ci).apply(repository))
-            .then(CategoryDocTypeConverter::convertTo)
-            .getPromise();
+    public static Function<FmsConfig, Promise<CategoryDocTypeInfo>> save(final CategoryDocTypeInfo info) {
+        return (config) -> React.of(() -> info)
+                .thenP(findUploadCategory(config))
+                .thenR(CategoryDocTypeConverter.convert(info))
+                .then(cdt -> config.getCategoryDocTypeRepository().save(cdt))
+                .then(CategoryDocTypeConverter::convertTo)
+                .getPromise();
     }
 
-    public Promise<List<CategoryDocTypeInfo>> findAll() {
-        return React.of(CategoryDocTypeService.findAll().apply(repository))
-            .then(FunctionUtils.asList(CategoryDocTypeConverter::convertTo))
-            .getPromise();
+    public static Function<CategoryDocTypeRepository, Promise<List<CategoryDocTypeInfo>>> findAll() {
+        return repo -> React.of(() -> repo.findAll())
+                .then(asList(CategoryDocTypeConverter::convertTo))
+                .getPromise();
     }
 
-    public Promise<CategoryDocTypeInfo> find(final Long id) {
-        return getCategoryDocTypeReact(id)
-            .then(CategoryDocTypeConverter::convertTo)
-            .getPromise();
+    public static Function<CategoryDocTypeRepository, Promise<CategoryDocTypeInfo>> find(final Long id) {
+        return repo -> React.of(() -> id)
+                .then(repo::findOne)
+                .then(CategoryDocTypeConverter::convertTo)
+                .getPromise();
     }
 
-    public Promise<CategoryDocType> findCategoryDocType(final Long id) {
-        return getCategoryDocTypeReact(id).getPromise();
+    public static Function<CategoryDocTypeRepository,Promise<CategoryDocType>> findCategoryDocType(final Long id) {
+        return repo -> getCategoryDocTypeReact(id).apply(repo).getPromise();
     }
 
-    private React<CategoryDocType> getCategoryDocTypeReact(final Long id) {
-        return React.of(id).thenWithReact(i -> CategoryDocTypeService.findById(i).apply(repository));
+    private static Function<CategoryDocTypeRepository, React<CategoryDocType>> getCategoryDocTypeReact(final Long id) {
+        return repo -> React.of(() -> repo.findOne(id));
     }
 
-    public Promise<CategoryDocTypeInfo> update(final Long id, final CategoryDocTypeInfo info) {
-        return React.of(CategoryDocTypeConverter.convertWithId(info)
-            .apply(Tuple.of(React.of(facade.findByName(info.getUploadCategoryName()).get()), id)))
-            .thenWithReact(categoryDocType -> CategoryDocTypeService.update(categoryDocType).apply(repository))
-            .then(CategoryDocTypeConverter::convertTo)
-            .getPromise();
+    private static Function<CategoryDocTypeInfo, Promise<UploadCategory>> findUploadCategory(FmsConfig config) {
+        return cdtInfo -> findByName(cdtInfo.getUploadCategoryName()).apply(config.getUploadCategoryRepository());
     }
 
-    public Promise<Long> delete(final Long id) {
-        return CategoryDocTypeService.delete(id).apply(repository)
-            .getPromise();
+    public static Function<FmsConfig, Promise<CategoryDocTypeInfo>> update(final Long id, final CategoryDocTypeInfo info) {
+        return config -> React.of(() ->info)
+                .thenP(findUploadCategory(config))
+                .thenR(cat -> CategoryDocTypeConverter.convertWithId(info).apply(Tuple.of(cat, id)))
+                .then(cdt -> config.getCategoryDocTypeRepository().saveAndFlush(cdt))
+                .then(CategoryDocTypeConverter::convertTo)
+                .getPromise();
+    }
+
+    public static Function<CategoryDocTypeRepository, Promise<Long>> delete(final Long id) {
+        return repo -> React.of(() -> id)
+                .thenV(repo::delete)
+                .getPromise();
     }
 }
