@@ -1,10 +1,7 @@
 package com.fms.core.controller;
 
-import static com.fms.core.categorydoctype.CategoryDocTypeFacade.*;
-
-import com.fms.core.config.FmsConfig;
 import com.fms.core.categorydoctype.CategoryDocTypeInfo;
-
+import com.fms.core.config.FmsConfig;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -18,9 +15,10 @@ import org.springframework.web.context.request.async.DeferredResult;
 import java.util.List;
 
 import static com.fms.core.DeferredResultProvider.createDeferredResult;
+import static com.fms.core.categorydoctype.CategoryDocTypeFacade.*;
 
 @RestController
-@RequestMapping(value = "/fms/categorydoctypes")
+@RequestMapping(value = "/categorydoctypes")
 @Api(value = "category doc types", description = "CRUD operations for category doc types")
 public class CategoryDocTypeController {
 
@@ -30,6 +28,7 @@ public class CategoryDocTypeController {
 
     @ApiOperation(
         produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
         value = "Get All available category document types",
         notes = "Get All available category document types")
     @RequestMapping(method = RequestMethod.GET)

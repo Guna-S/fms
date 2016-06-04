@@ -1,10 +1,7 @@
 package com.fms.core.controller;
 
-import static com.fms.core.uploadcategory.UploadCategoryFacade.*;
-
-import com.fms.core.uploadcategory.UploadCategoryInfo;
-
 import com.fms.core.repository.UploadCategoryRepository;
+import com.fms.core.uploadcategory.UploadCategoryInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -18,9 +15,10 @@ import org.springframework.web.context.request.async.DeferredResult;
 import java.util.List;
 
 import static com.fms.core.DeferredResultProvider.createDeferredResult;
+import static com.fms.core.uploadcategory.UploadCategoryFacade.*;
 
 @RestController
-@RequestMapping(value = "/fms/categories")
+@RequestMapping(value = "/categories")
 @Api(value = "upload category", description = "UploadCategoryController")
 public class UploadCategoryController {
 
@@ -29,21 +27,25 @@ public class UploadCategoryController {
 
     @ApiOperation(
         produces = MediaType.APPLICATION_JSON_VALUE,
-        value = "Get All available upload categories")
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        value = "Get All available upload categories",
+        notes = "Get all categories api")
     @RequestMapping(method = RequestMethod.GET)
     public DeferredResult<ResponseEntity<List<UploadCategoryInfo>>> getAllCategories() {
         return createDeferredResult(findAll()
-                .with(repository), HttpStatus.OK);
+            .with(repository), HttpStatus.OK);
     }
 
     @ApiOperation(
         produces = MediaType.APPLICATION_JSON_VALUE,
-        value = "")
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        value = "new upload category api",
+        notes = "new upload category api")
     @RequestMapping(method = RequestMethod.POST)
     public DeferredResult<ResponseEntity<UploadCategoryInfo>> saveCategory(
-                                                     @ApiParam(name = "uploadCategoryInfo", value = "new category " +
-                                                         "info json", required = true)
-                                                     @RequestBody final UploadCategoryInfo uploadCategoryInfo) {
+        @ApiParam(name = "uploadCategoryInfo", value = "new category " +
+            "info json", required = true)
+        @RequestBody final UploadCategoryInfo uploadCategoryInfo) {
         return createDeferredResult(save(uploadCategoryInfo).with(repository), HttpStatus.CREATED);
     }
 
@@ -53,15 +55,30 @@ public class UploadCategoryController {
     }
 
 
+    @ApiOperation(
+        produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        value = "update the category by id",
+        notes = "update the category by id")
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public DeferredResult<ResponseEntity<UploadCategoryInfo>> updateCategorry(@PathVariable final Long id,
+    public DeferredResult<ResponseEntity<UploadCategoryInfo>> updateCategorry(
+        @ApiParam(value = "category id", name = "categoryId", required = true)
+        @PathVariable final Long id,
+        @ApiParam(value = "category info json with updated values", name = "uploadCategoryInfo", required = true)
         @RequestBody final UploadCategoryInfo uploadCategoryInfo) {
         return createDeferredResult(update(id, uploadCategoryInfo).with(repository), HttpStatus.OK);
     }
 
 
+    @ApiOperation(
+        produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        value = "remove the category by id",
+        notes = "remove the category by id")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public DeferredResult<ResponseEntity<Long>> remove(@PathVariable final Long id) {
+    public DeferredResult<ResponseEntity<Long>> remove(
+        @ApiParam(value = "category id", name = "categoryId", required = true)
+        @PathVariable final Long id) {
         return createDeferredResult(delete(id).with(repository), HttpStatus.OK);
     }
 }

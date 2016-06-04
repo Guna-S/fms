@@ -1,5 +1,6 @@
 server:
   port: 8090
+  context-path: /fms
 
 file:
   rootFolder: /Users/Ganesan/Work/Assay/FMS
@@ -9,10 +10,10 @@ info:
     build.version: 0.1.0-XXX
 
 spring:
-  jpa:
+ jpa:
     hibernate:
       ddl-auto: create-drop
     generate-ddl: true
     show-sql: true
-  datasource:
+ datasource:
     data: classpath:/master.sql
