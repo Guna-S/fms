@@ -2,18 +2,27 @@ package com.fms.core.document;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fms.core.common.Builder;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 
+@ApiModel("document model")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DocumentInfo implements Serializable {
 
     private static final long serialVersionUID = -6390849593000747058L;
+    @ApiModelProperty(value = "document type id")
     private Long documentTypeId;
+    @ApiModelProperty(value = "uploader id")
     private String uploaderId;
+    @ApiModelProperty(value = "file information")
     private String fileInfo;
+    @ApiModelProperty(value = "name of the file")
     private String fileName;
+    @ApiModelProperty(value = "location of the file")
     private String fileLocation;
+    @ApiModelProperty(value = "document id")
     private Long id;
 
 
@@ -51,9 +60,9 @@ public class DocumentInfo implements Serializable {
 
     public static Builder<DocumentInfo> builder(final UploadInfo info) {
         return builder()
-                .with(DocumentInfo::getDocumentTypeId, info.getDocumentTypeId())
-                .with(DocumentInfo::getFileInfo, info.getFileInfo())
-                .with(DocumentInfo::getFileName, info.getFileName())
-                .with(DocumentInfo::getUploaderId, info.getUploaderId());
+            .with(DocumentInfo::getDocumentTypeId, info.getDocumentTypeId())
+            .with(DocumentInfo::getFileInfo, info.getFileInfo())
+            .with(DocumentInfo::getFileName, info.getFileName())
+            .with(DocumentInfo::getUploaderId, info.getUploaderId());
     }
 }
