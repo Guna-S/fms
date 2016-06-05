@@ -1,5 +1,6 @@
 package com.fms.core.common;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -23,6 +24,10 @@ public interface TwoTrack<T> {
 
     void onSuccess(Consumer<T> success);
     void onFailure(Consumer<ErrorCodeAndParam> failure);
+
+    default T get(final Function<ErrorCodeAndParam, T>  errorConvertor){
+        return Optional.ofNullable(get()).orElseGet(() -> errorConvertor.apply(getErrorCode()));
+    }
 
     class SuccessTrack<T> implements TwoTrack<T> {
 

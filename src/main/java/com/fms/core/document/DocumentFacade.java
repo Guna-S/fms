@@ -1,9 +1,11 @@
 package com.fms.core.document;
 
 import com.fms.core.categorydoctype.CategoryDocTypeFacade;
+import com.fms.core.model.DocumentModel;
 import com.fms.core.repository.DocumentRepository;
 import com.fms.core.common.*;
 import javaslang.Tuple;
+import org.springframework.core.io.FileSystemResource;
 
 import java.util.List;
 
@@ -26,6 +28,16 @@ public class DocumentFacade {
             .then(asTwoTrack(DocumentConverter::convertTo))
             .getPromise());
     }
+
+    public static Reader<DocumentRepository, Promise<FileSystemResource>> getFile(final Long id) {
+        return Reader.of(repo -> React.of(id)
+                .then(repo::findOne)
+                .then(DocumentModel::getFileLocation)
+                .then(FileSystemResource::new)
+                .getPromise());
+    }
+
+
 
     public static Reader<DocumentRepository, Promise<List<DocumentInfo>>> documents(final String uploaderId) {
         return Reader.of(repo -> React

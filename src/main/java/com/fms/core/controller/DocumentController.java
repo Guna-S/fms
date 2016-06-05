@@ -5,16 +5,15 @@ import static com.fms.core.document.DocumentUtil.fileWritter;
 
 import com.fms.core.config.FmsConfig;
 import com.fms.core.document.DocumentConfig;
-import com.fms.core.document.Document;
 import com.fms.core.document.DocumentInfo;
 import com.fms.core.document.UploadInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.util.List;
 
@@ -39,13 +38,19 @@ public class DocumentController {
                     .build()), HttpStatus.ACCEPTED);
     }
 
-    @RequestMapping(value = "/documents", method = RequestMethod.GET)
-    public DeferredResult<ResponseEntity<List<DocumentInfo>>> getAllDocuments(@RequestBody final String uploaderId) {
-        return createDeferredResult(documents(uploaderId).with(fmsConfig.getDocumentRepository()), HttpStatus.FOUND);
+    @RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
+    public DeferredResult<ResponseEntity<FileSystemResource>> download(@PathVariable Long id) {
+        return createDeferredResult(getFile(id)
+                        .with(fmsConfig.getDocumentRepository()), HttpStatus.ACCEPTED);
     }
 
-    @RequestMapping(value = "/delete/{docId}",method = RequestMethod.DELETE)
-    public DeferredResult<ResponseEntity<Long>> remove(@PathVariable final Long id){
-        return createDeferredResult(removeFile(id).with(fmsConfig.getDocumentRepository()),HttpStatus.OK);
+    @RequestMapping(value = "/documents/{uploaderid}", method = RequestMethod.GET)
+    public DeferredResult<ResponseEntity<List<DocumentInfo>>> getAllDocuments(@PathVariable final String uploaderid) {
+        return createDeferredResult(documents(uploaderid).with(fmsConfig.getDocumentRepository()), HttpStatus.FOUND);
+    }
+
+    @RequestMapping(value = "/delete/{docid}",method = RequestMethod.DELETE)
+    public DeferredResult<ResponseEntity<Long>> remove(@PathVariable final Long docid){
+        return createDeferredResult(removeFile(docid).with(fmsConfig.getDocumentRepository()),HttpStatus.OK);
     }
 }

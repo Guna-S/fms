@@ -1,17 +1,16 @@
 package com.fms.core.document;
 
-import com.fms.core.common.ErrorCodeAndParam;
+import com.fms.core.common.*;
 import com.fms.core.model.CategoryDocType;
-import com.fms.core.common.ErrorCode;
-import com.fms.core.common.TwoTrack;
 import com.fms.core.model.DocumentModel;
 import javaslang.Tuple2;
 import javaslang.control.Try;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -38,9 +37,17 @@ public class DocumentUtil {
     }
 
     public static Function<DocumentModel, TwoTrack<DocumentModel>> fileWritter(MultipartFile file) {
-        return (doc) -> Try.of(() -> file.getInputStream())
-                .mapTry(is -> Files.copy(is, Paths.get(doc.getFileLocation())))
+        return doc -> Try.of(() -> {
+                    Path path = Paths.get(doc.getFileLocation());
+                    if(!Files.exists(path.getParent())) {
+                        Files.createDirectories(path.getParent());
+                    }
+                    return path;
+                }).mapTry(path -> Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING))
                 .mapTry(l -> TwoTrack.of(doc))
-                .getOrElseGet((e) -> TwoTrack.of(new ErrorCodeAndParam(e, ErrorCode.FILE_WRTING_FAILED)));
+                .getOrElseGet(e-> TwoTrack.of(new ErrorCodeAndParam(e, ErrorCode.FILE_WRTING_FAILED)));
     }
+
+
+
 }

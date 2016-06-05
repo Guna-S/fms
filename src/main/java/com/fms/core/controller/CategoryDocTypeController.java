@@ -34,7 +34,8 @@ public class CategoryDocTypeController {
         notes = "Get All available category document types")
     @RequestMapping(method = RequestMethod.GET)
     public DeferredResult<ResponseEntity<List<CategoryDocTypeInfo>>> getAllCategories() {
-        return createDeferredResult(findAll().with(config.getCategoryDocTypeRepository()), HttpStatus.OK);
+        return createDeferredResult(findAll()
+                .with(config.getCategoryDocTypeRepository()), HttpStatus.OK);
     }
 
     @ApiOperation(
@@ -46,7 +47,8 @@ public class CategoryDocTypeController {
         @ApiParam(name = "categoryDocTypeInfo", value = "new category " +
             "info json", required = true)
         @RequestBody final CategoryDocTypeInfo categoryDocTypeInfo) {
-        return createDeferredResult(save(categoryDocTypeInfo).with(config), HttpStatus.CREATED);
+        return createDeferredResult(save(categoryDocTypeInfo)
+                .with(config), HttpStatus.CREATED);
     }
 
     @ApiOperation(
@@ -70,7 +72,8 @@ public class CategoryDocTypeController {
         @PathVariable final Long id,
         @ApiParam(name = "categoryDocTypeInfo", value = "updated values of category info json", required = true)
         @RequestBody final CategoryDocTypeInfo categoryDocTypeInfo) {
-        return createDeferredResult(update(id, categoryDocTypeInfo).with(config), HttpStatus.OK);
+        return createDeferredResult(update(id, categoryDocTypeInfo)
+                .with(config), HttpStatus.OK);
     }
 
 
@@ -82,6 +85,7 @@ public class CategoryDocTypeController {
     public DeferredResult<ResponseEntity<Long>> remove(
         @ApiParam(name = "categoryId", value = "category id", required = true)
         @PathVariable final Long id) {
-        return createDeferredResult(delete(id).with(config.getCategoryDocTypeRepository()), HttpStatus.OK);
+        return createDeferredResult(delete(id)
+                .with(config.getCategoryDocTypeRepository()), HttpStatus.OK);
     }
 }
