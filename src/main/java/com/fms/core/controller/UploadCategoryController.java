@@ -2,6 +2,7 @@ package com.fms.core.controller;
 
 import com.fms.core.repository.UploadCategoryRepository;
 import com.fms.core.uploadcategory.UploadCategoryInfo;
+import com.fms.core.uploadcategory.UploadCategoryInfoDet;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -31,7 +32,7 @@ public class UploadCategoryController {
         value = "Get All available upload categories",
         notes = "Get all categories api")
     @RequestMapping(method = RequestMethod.GET)
-    public DeferredResult<ResponseEntity<List<UploadCategoryInfo>>> getAllCategories() {
+    public DeferredResult<ResponseEntity<List<UploadCategoryInfoDet>>> getAllCategories() {
         return createDeferredResult(findAll()
             .with(repository), HttpStatus.OK);
     }
@@ -42,7 +43,7 @@ public class UploadCategoryController {
         value = "new upload category api",
         notes = "new upload category api")
     @RequestMapping(method = RequestMethod.POST)
-    public DeferredResult<ResponseEntity<UploadCategoryInfo>> saveCategory(
+    public DeferredResult<ResponseEntity<UploadCategoryInfoDet>> saveCategory(
         @ApiParam(name = "uploadCategoryInfo", value = "new category " +
             "info json", required = true)
         @RequestBody final UploadCategoryInfo uploadCategoryInfo) {
@@ -50,7 +51,7 @@ public class UploadCategoryController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public DeferredResult<ResponseEntity<UploadCategoryInfo>> get(@PathVariable final Long id) {
+    public DeferredResult<ResponseEntity<UploadCategoryInfoDet>> get(@PathVariable final Long id) {
         return createDeferredResult(find(id).with(repository), HttpStatus.OK);
     }
 
@@ -61,7 +62,7 @@ public class UploadCategoryController {
         value = "update the category by id",
         notes = "update the category by id")
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public DeferredResult<ResponseEntity<UploadCategoryInfo>> updateCategorry(
+    public DeferredResult<ResponseEntity<UploadCategoryInfoDet>> updateCategorry(
         @ApiParam(value = "category id", name = "categoryId", required = true)
         @PathVariable final Long id,
         @ApiParam(value = "category info json with updated values", name = "uploadCategoryInfo", required = true)

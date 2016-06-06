@@ -17,9 +17,9 @@ public class UploadCategoryFacade {
      * @param id
      * @return
      */
-    public static Reader<UploadCategoryRepository, Promise<UploadCategoryInfo>> find(final Long id) {
+    public static Reader<UploadCategoryRepository, Promise<UploadCategoryInfoDet>> find(final Long id) {
         return Reader.of(repo -> React.of(() -> repo.findOne(id))
-                .then(UploadCategoryConverter::convertTo)
+                .then(UploadCategoryConverter::convertToDet)
                 .getPromise());
 
     }
@@ -40,11 +40,11 @@ public class UploadCategoryFacade {
      * @param uploadCategoryInfo
      * @return
      */
-    public static Reader<UploadCategoryRepository, Promise<UploadCategoryInfo>> save(final UploadCategoryInfo uploadCategoryInfo) {
+    public static Reader<UploadCategoryRepository, Promise<UploadCategoryInfoDet>> save(final UploadCategoryInfo uploadCategoryInfo) {
         return Reader.of(repo ->  React.of(() -> uploadCategoryInfo)
                 .then(UploadCategoryConverter::convert)
                 .then(repo::save)
-                .then(UploadCategoryConverter::convertTo)
+                .then(UploadCategoryConverter::convertToDet)
                 .getPromise());
     }
 
@@ -54,10 +54,10 @@ public class UploadCategoryFacade {
      * @param uploadCategoryInfo
      * @return
      */
-    public static Reader<UploadCategoryRepository, Promise<UploadCategoryInfo>> update(final Long id, final UploadCategoryInfo uploadCategoryInfo) {
+    public static Reader<UploadCategoryRepository, Promise<UploadCategoryInfoDet>> update(final Long id, final UploadCategoryInfo uploadCategoryInfo) {
         return Reader.of(repository -> React.of(() -> UploadCategoryConverter.convertWithId(uploadCategoryInfo, id))
                 .then(repository::saveAndFlush)
-                .then(UploadCategoryConverter::convertTo)
+                .then(UploadCategoryConverter::convertToDet)
                 .getPromise());
     }
 
@@ -74,9 +74,9 @@ public class UploadCategoryFacade {
      *
      * @return
      */
-    public static Reader<UploadCategoryRepository, Promise<List<UploadCategoryInfo>>> findAll() {
+    public static Reader<UploadCategoryRepository, Promise<List<UploadCategoryInfoDet>>> findAll() {
         return Reader.of(repository -> React.of(() -> repository.findAll())
-                .then(asList(UploadCategoryConverter::convertTo))
+                .then(asList(UploadCategoryConverter::convertToDet))
                 .getPromise());
     }
 }
