@@ -22,11 +22,16 @@ public interface TwoTrack<T> {
 
     <R> TwoTrack<R> map(Function<T, R> function);
 
+    default  <R> Function<TwoTrack<T>, TwoTrack<R>> asTwoTrack(final Function<T, R> function) {
+        return t -> t.map(function);
+    }
+
+
     void onSuccess(Consumer<T> success);
     void onFailure(Consumer<ErrorCodeAndParam> failure);
 
-    default T get(final Function<ErrorCodeAndParam, T>  errorConvertor){
-        return Optional.ofNullable(get()).orElseGet(() -> errorConvertor.apply(getErrorCode()));
+    default T get(final Function<ErrorCodeAndParam, T>  errorConverter){
+        return Optional.ofNullable(get()).orElseGet(() -> errorConverter.apply(getErrorCode()));
     }
 
     class SuccessTrack<T> implements TwoTrack<T> {

@@ -2,22 +2,19 @@ package com.fms.core.categorydoctype;
 
 import com.fms.core.model.CategoryDocType;
 import com.fms.core.model.UploadCategory;
-import com.fms.core.common.React;
 import javaslang.Tuple2;
 
 import java.util.function.Function;
 
 public class CategoryDocTypeConverter {
 
-    public static Function<UploadCategory, React<CategoryDocType>> convert(
+    public static Function<UploadCategory, CategoryDocType> convert(
         final CategoryDocTypeInfo source) {
-        return category -> React
-            .of(() -> category)
-            .then(uc -> CategoryDocType.builder()
-                .with(c -> c.getDesc(), source.getDesc())
-                .with(c -> c.getType(), source.getType())
-                .with(c -> c.getUploadCategory(), uc)
-                .build());
+        return uc -> CategoryDocType.builder()
+            .with(c -> c.getDesc(), source.getDesc())
+            .with(c -> c.getType(), source.getType())
+            .with(c -> c.getUploadCategory(), uc)
+            .build();
 
     }
 
@@ -34,14 +31,12 @@ public class CategoryDocTypeConverter {
             .build();
     }
 
-    public static Function<Tuple2<UploadCategory, Long>, React<CategoryDocType>> convertWithId(
+    public static Function<Tuple2<UploadCategory, Long>, CategoryDocType> convertWithId(
         final CategoryDocTypeInfo source) {
-        return (tuple) -> React
-            .of(convert(source).apply(tuple._1))
-            .then(cd -> CategoryDocType
-                .builder(cd)
-                .on(c -> c.getId())
-                .set(tuple._2)
-                .build());
+        return (tuple) -> CategoryDocType
+            .builder((convert(source).apply(tuple._1)))
+            .on(c -> c.getId())
+            .set(tuple._2)
+            .build();
     }
 }

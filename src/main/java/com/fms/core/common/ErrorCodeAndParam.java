@@ -7,9 +7,14 @@ public class ErrorCodeAndParam {
 
     private final ErrorCode errorCode;
     private final String[] params;
-    private final Throwable cause;
+    private  Throwable cause;
 
-    public ErrorCodeAndParam(Throwable cause, ErrorCode errorCode, String... params) {
+    public ErrorCodeAndParam(final ErrorCode errorCode,final String... params) {
+        this.params = params;
+        this.errorCode = errorCode;
+    }
+
+    public ErrorCodeAndParam(final Throwable cause, final ErrorCode errorCode, final String... params) {
         this.errorCode = errorCode;
         this.params = params;
         this.cause = cause;

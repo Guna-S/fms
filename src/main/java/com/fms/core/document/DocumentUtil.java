@@ -1,6 +1,8 @@
 package com.fms.core.document;
 
-import com.fms.core.common.*;
+import com.fms.core.common.ErrorCode;
+import com.fms.core.common.ErrorCodeAndParam;
+import com.fms.core.common.TwoTrack;
 import com.fms.core.model.CategoryDocType;
 import com.fms.core.model.DocumentModel;
 import javaslang.Tuple2;
@@ -36,7 +38,7 @@ public class DocumentUtil {
 
     }
 
-    public static Function<DocumentModel, TwoTrack<DocumentModel>> fileWritter(MultipartFile file) {
+    public static Function<DocumentModel, TwoTrack<DocumentModel>> fileWritter(final MultipartFile file) {
         return doc -> Try.of(() -> {
                     Path path = Paths.get(doc.getFileLocation());
                     if(!Files.exists(path.getParent())) {
@@ -45,7 +47,7 @@ public class DocumentUtil {
                     return path;
                 }).mapTry(path -> Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING))
                 .mapTry(l -> TwoTrack.of(doc))
-                .getOrElseGet(e-> TwoTrack.of(new ErrorCodeAndParam(e, ErrorCode.FILE_WRTING_FAILED)));
+                .getOrElseGet(e-> TwoTrack.of(new ErrorCodeAndParam(e, ErrorCode.FILE_WRITING_FAILED)));
     }
 
 

@@ -16,6 +16,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 import java.util.List;
 
 import static com.fms.core.DeferredResultProvider.createDeferredResult;
+import static com.fms.core.DeferredResultProvider.createDeferredResultTwoTrack;
 import static com.fms.core.uploadcategory.UploadCategoryFacade.*;
 
 @RestController
@@ -40,8 +41,8 @@ public class UploadCategoryController {
     @ApiOperation(
         produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = MediaType.APPLICATION_JSON_VALUE,
-        value = "new upload category api",
-        notes = "new upload category api")
+        value = "save the new category json",
+        notes = "save the new category json")
     @RequestMapping(method = RequestMethod.POST)
     public DeferredResult<ResponseEntity<UploadCategoryInfoDet>> saveCategory(
         @ApiParam(name = "uploadCategoryInfo", value = "new category " +
@@ -50,9 +51,16 @@ public class UploadCategoryController {
         return createDeferredResult(save(uploadCategoryInfo).with(repository), HttpStatus.CREATED);
     }
 
+    @ApiOperation(
+        produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        value = "get upload category by category id",
+        notes = "get upload category by category id")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public DeferredResult<ResponseEntity<UploadCategoryInfoDet>> get(@PathVariable final Long id) {
-        return createDeferredResult(find(id).with(repository), HttpStatus.OK);
+    public DeferredResult<ResponseEntity<UploadCategoryInfoDet>> get(
+        @ApiParam(value = "category id",name = "id")
+        @PathVariable final Long id) {
+        return createDeferredResultTwoTrack(find(id).with(repository), HttpStatus.OK);
     }
 
 

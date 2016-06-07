@@ -1,8 +1,5 @@
 package com.fms.core.controller;
 
-import static com.fms.core.document.DocumentFacade.*;
-import static com.fms.core.document.DocumentUtil.fileWritter;
-
 import com.fms.core.config.FmsConfig;
 import com.fms.core.document.DocumentConfig;
 import com.fms.core.document.DocumentInfo;
@@ -23,6 +20,8 @@ import java.util.List;
 
 import static com.fms.core.DeferredResultProvider.createDeferredResult;
 import static com.fms.core.DeferredResultProvider.createDeferredResultTwoTrack;
+import static com.fms.core.document.DocumentFacade.*;
+import static com.fms.core.document.DocumentUtil.fileWritter;
 
 @RestController
 @Api(value = "documentController", description = "controller has all the document related api's")
@@ -33,7 +32,7 @@ public class DocumentController {
 
     @ApiOperation(
         produces = MediaType.APPLICATION_JSON_VALUE,
-        consumes = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
         value = "upload document api",
         notes = "upload document api"
     )
@@ -41,10 +40,10 @@ public class DocumentController {
         method = RequestMethod.POST,
         headers = "Content-Type=multipart/form-data")
     public DeferredResult<ResponseEntity<DocumentInfo>> upload(
-        @ApiParam(value = "document")
+        @ApiParam(value = "document as file",name="file")
         @RequestParam("file") final MultipartFile file,
-        @ApiParam(value = "info related to documents")
-        @RequestPart("docinfo")
+        @ApiParam(value = "info related to documents",name="docInfo")
+        @RequestPart("docInfo")
         final UploadInfo docInfo) {
         return createDeferredResultTwoTrack(
             save(docInfo)
@@ -55,9 +54,17 @@ public class DocumentController {
                     .build()), HttpStatus.ACCEPTED);
     }
 
-    @RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
-    public DeferredResult<ResponseEntity<FileSystemResource>> download(@PathVariable Long id) {
-        return createDeferredResult(getFile(id)
+    @ApiOperation(
+        produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        value = "download document from document id",
+        notes = "download document from document id"
+    )
+    @RequestMapping(value = "/download/{docId}", method = RequestMethod.GET)
+    public DeferredResult<ResponseEntity<FileSystemResource>> download(
+        @ApiParam(value = "document id",name = "docId")
+        @PathVariable final Long docId) {
+        return createDeferredResult(getFile(docId)
                 .with(fmsConfig.getDocumentRepository()), HttpStatus.ACCEPTED);
     }
 
@@ -65,16 +72,26 @@ public class DocumentController {
     @ApiOperation(
         produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = MediaType.APPLICATION_JSON_VALUE,
-        value = "remove the document for given uploader id",
-        notes = "remove the document for given uploader ids"
+        value = "get all  the document for given uploader id",
+        notes = "get all  the document for given uploader ids"
     )
-    @RequestMapping(value = "/documents/{uploaderid}", method = RequestMethod.GET)
-    public DeferredResult<ResponseEntity<List<DocumentInfo>>> getAllDocuments(@PathVariable final String uploaderid) {
-        return createDeferredResult(documents(uploaderid).with(fmsConfig.getDocumentRepository()), HttpStatus.FOUND);
+    @RequestMapping(value = "/documents/{uploaderId}", method = RequestMethod.GET)
+    public DeferredResult<ResponseEntity<List<DocumentInfo>>> getAllDocuments(
+        @ApiParam(name = "uploaderId",value = "uploader id of document ")
+        @PathVariable final String uploaderId) {
+        return createDeferredResult(documents(uploaderId).with(fmsConfig.getDocumentRepository()), HttpStatus.FOUND);
     }
 
-    @RequestMapping(value = "/delete/{docid}",method = RequestMethod.DELETE)
-    public DeferredResult<ResponseEntity<Long>> remove(@PathVariable final Long docid){
-        return createDeferredResult(removeFile(docid).with(fmsConfig.getDocumentRepository()),HttpStatus.OK);
+    @ApiOperation(
+        produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        value = "remove the document for given document id",
+        notes = "remove the document for given document id"
+    )
+    @RequestMapping(value = "/delete/{docId}",method = RequestMethod.DELETE)
+    public DeferredResult<ResponseEntity<Long>> remove(
+        @ApiParam(name = "docId",value = "document id")
+        @PathVariable final Long docId){
+        return createDeferredResult(removeFile(docId).with(fmsConfig.getDocumentRepository()),HttpStatus.OK);
     }
 }

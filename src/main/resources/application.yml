@@ -1,5 +1,5 @@
 server:
-  port: 8090
+  port: 8091
   context-path: /fms
 
 file:
@@ -15,5 +15,6 @@ spring:
       ddl-auto: create-drop
     generate-ddl: true
     show-sql: true
+    database-platform: org.hibernate.dialect.HSQLDialect
  datasource:
     data: classpath:/master.sql

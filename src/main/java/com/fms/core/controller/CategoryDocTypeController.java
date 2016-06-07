@@ -15,6 +15,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 import java.util.List;
 
 import static com.fms.core.DeferredResultProvider.createDeferredResult;
+import static com.fms.core.DeferredResultProvider.createDeferredResultTwoTrack;
 import static com.fms.core.categorydoctype.CategoryDocTypeFacade.*;
 
 @RestController
@@ -46,7 +47,7 @@ public class CategoryDocTypeController {
         @ApiParam(name = "categoryDocTypeInfo", value = "new category " +
             "info json", required = true)
         @RequestBody final CategoryDocTypeInfo categoryDocTypeInfo) {
-        return createDeferredResult(save(categoryDocTypeInfo)
+        return createDeferredResultTwoTrack(save(categoryDocTypeInfo)
                 .with(config), HttpStatus.CREATED);
     }
 
@@ -71,7 +72,7 @@ public class CategoryDocTypeController {
         @PathVariable final Long id,
         @ApiParam(name = "categoryDocTypeInfo", value = "updated values of category info json", required = true)
         @RequestBody final CategoryDocTypeInfo categoryDocTypeInfo) {
-        return createDeferredResult(update(id, categoryDocTypeInfo)
+        return createDeferredResultTwoTrack(update(id, categoryDocTypeInfo)
                 .with(config), HttpStatus.OK);
     }
 

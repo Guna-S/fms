@@ -1,14 +1,13 @@
 package com.fms.core.uploadcategory;
 
-import static com.fms.core.common.FunctionUtils.*;
-
+import com.fms.core.common.*;
 import com.fms.core.model.UploadCategory;
 import com.fms.core.repository.UploadCategoryRepository;
-import com.fms.core.common.Promise;
-import com.fms.core.common.React;
-import com.fms.core.common.Reader;
 
 import java.util.List;
+import java.util.Optional;
+
+import static com.fms.core.common.FunctionUtils.asList;
 
 public class UploadCategoryFacade {
 
@@ -17,10 +16,14 @@ public class UploadCategoryFacade {
      * @param id
      * @return
      */
-    public static Reader<UploadCategoryRepository, Promise<UploadCategoryInfoDet>> find(final Long id) {
+    public static Reader<UploadCategoryRepository, Promise<TwoTrack<UploadCategoryInfoDet>>> find(final Long id) {
         return Reader.of(repo -> React.of(() -> repo.findOne(id))
-                .then(UploadCategoryConverter::convertToDet)
-                .getPromise());
+            .then(uc -> Optional.ofNullable(uc)
+                .map(TwoTrack::of)
+                .orElseGet(
+                    () -> TwoTrack.of(new ErrorCodeAndParam(ErrorCode.NOT_FOUND))))
+            .then(FunctionUtils.asTwoTrack(UploadCategoryConverter::convertToDet))
+            .getPromise());
 
     }
 
@@ -66,8 +69,14 @@ public class UploadCategoryFacade {
      * @param name
      * @return
      */
-    public static Reader<UploadCategoryRepository, Promise<UploadCategory>>  findByName(final String name) {
-        return Reader.of(repository -> React.of(() -> name).then(repository::findByName).getPromise());
+    public static Reader<UploadCategoryRepository, Promise<TwoTrack<UploadCategory>>>  findByName(final String name) {
+        return Reader.of(repository -> React.of(() -> name)
+            .then(repository::findByName)
+            .then(uc -> Optional.ofNullable(uc)
+                .map(TwoTrack::of)
+                .orElseGet(
+                    () -> TwoTrack.of(new ErrorCodeAndParam(ErrorCode.NOT_FOUND))))
+            .getPromise());
     }
 
     /**

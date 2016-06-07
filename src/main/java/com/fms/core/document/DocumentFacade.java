@@ -1,9 +1,9 @@
 package com.fms.core.document;
 
 import com.fms.core.categorydoctype.CategoryDocTypeFacade;
+import com.fms.core.common.*;
 import com.fms.core.model.DocumentModel;
 import com.fms.core.repository.DocumentRepository;
-import com.fms.core.common.*;
 import javaslang.Tuple;
 import org.springframework.core.io.FileSystemResource;
 
@@ -15,8 +15,7 @@ public class DocumentFacade {
 
 
 
-    public static Reader<DocumentConfig, Promise<TwoTrack<DocumentInfo>>> save(final
-    UploadInfo uploadInfo) {
+    public static Reader<DocumentConfig, Promise<TwoTrack<DocumentInfo>>> save(final UploadInfo uploadInfo) {
         return Reader.of(config -> React.of(() -> uploadInfo)
             .thenP(info -> CategoryDocTypeFacade.findCategoryDocType
                 (info.getDocumentTypeId()).with(config.getCategoryDocTypeRepository()))
@@ -24,6 +23,7 @@ public class DocumentFacade {
                 cdt)), cdt))
             .then(tuple -> DocumentConverter.convert(tuple._1).apply(tuple._2))
             .then(document -> config.getFileWriter().apply(document))
+//            .then(s -> s.asTwoTrack(st-> config.getDocumentRepository().save(st)))
             .then(asTwoTrack(s-> config.getDocumentRepository().save(s)))
             .then(asTwoTrack(DocumentConverter::convertTo))
             .getPromise());
