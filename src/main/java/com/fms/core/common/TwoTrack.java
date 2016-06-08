@@ -3,11 +3,27 @@ package com.fms.core.common;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public interface TwoTrack<T> {
 
     static <T> TwoTrack<T> of(final T val) {
         return new SuccessTrack<>(val);
+    }
+
+    static <T> TwoTrack<T> ofNullable(T val) {
+        return Optional.ofNullable(val)
+                .map(TwoTrack::of)
+                .orElseGet(
+                        () -> TwoTrack.of(new ErrorCodeAndParam(ErrorCode.NOT_FOUND)));
+    }
+
+    static <T> TwoTrack<T> ofNullable(T val, Predicate<T> filter) {
+        return Optional.ofNullable(val)
+                .filter(filter)
+                .map(TwoTrack::of)
+                .orElseGet(
+                        () -> TwoTrack.of(new ErrorCodeAndParam(ErrorCode.NOT_FOUND)));
     }
 
     static <T> TwoTrack<T> of(final ErrorCodeAndParam error) {

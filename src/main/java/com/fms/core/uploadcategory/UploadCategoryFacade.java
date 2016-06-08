@@ -18,10 +18,7 @@ public class UploadCategoryFacade {
      */
     public static Reader<UploadCategoryRepository, Promise<TwoTrack<UploadCategoryInfoDet>>> find(final Long id) {
         return Reader.of(repo -> React.of(() -> repo.findOne(id))
-            .then(uc -> Optional.ofNullable(uc)
-                .map(TwoTrack::of)
-                .orElseGet(
-                    () -> TwoTrack.of(new ErrorCodeAndParam(ErrorCode.NOT_FOUND))))
+            .then(uc -> TwoTrack.ofNullable(uc))
             .then(FunctionUtils.asTwoTrack(UploadCategoryConverter::convertToDet))
             .getPromise());
 
@@ -72,10 +69,7 @@ public class UploadCategoryFacade {
     public static Reader<UploadCategoryRepository, Promise<TwoTrack<UploadCategory>>>  findByName(final String name) {
         return Reader.of(repository -> React.of(() -> name)
             .then(repository::findByName)
-            .then(uc -> Optional.ofNullable(uc)
-                .map(TwoTrack::of)
-                .orElseGet(
-                    () -> TwoTrack.of(new ErrorCodeAndParam(ErrorCode.NOT_FOUND))))
+            .then(uc ->  TwoTrack.ofNullable(uc))
             .getPromise());
     }
 

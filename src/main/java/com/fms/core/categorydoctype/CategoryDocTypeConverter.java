@@ -20,8 +20,7 @@ public class CategoryDocTypeConverter {
 
     public static CategoryDocTypeInfo convertTo(final CategoryDocType source) {
         return CategoryDocTypeInfo.builder()
-            .on(c -> c.getId())
-            .set(String.valueOf(source.getId()))
+            .on(c -> c.getId()).set(String.valueOf(source.getId()))
             .on(c -> c.getDesc())
             .set(source.getDesc())
             .on(c -> c.getType())

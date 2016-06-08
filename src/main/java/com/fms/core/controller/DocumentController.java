@@ -37,16 +37,15 @@ public class DocumentController {
         notes = "upload document api"
     )
     @RequestMapping(value = "/upload",
-        method = RequestMethod.POST,
-        headers = "Content-Type=multipart/form-data")
+        method = RequestMethod.POST)
     public DeferredResult<ResponseEntity<DocumentInfo>> upload(
         @ApiParam(value = "document as file",name="file")
         @RequestParam("file") final MultipartFile file,
-        @ApiParam(value = "info related to documents",name="docInfo")
-        @RequestPart("docInfo")
-        final UploadInfo docInfo) {
+        @ApiParam(value = "info related to documents",name="uploadInfo")
+        @RequestPart("uploadInfo")
+        final UploadInfo uploadInfo) {
         return createDeferredResultTwoTrack(
-            save(docInfo)
+            save(uploadInfo)
                 .with(DocumentConfig
                     .builder()
                     .with(DocumentConfig::getFmsConfig, fmsConfig)
