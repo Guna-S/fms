@@ -11,19 +11,19 @@ public interface TwoTrack<T> {
         return new SuccessTrack<>(val);
     }
 
-    static <T> TwoTrack<T> ofNullable(T val) {
+    static <T> TwoTrack<T> ofNullable(final T val) {
         return Optional.ofNullable(val)
-                .map(TwoTrack::of)
-                .orElseGet(
-                        () -> TwoTrack.of(new ErrorCodeAndParam(ErrorCode.NOT_FOUND)));
+            .map(TwoTrack::of)
+            .orElseGet(
+                () -> TwoTrack.of(new ErrorCodeAndParam(ErrorCode.NOT_FOUND)));
     }
 
-    static <T> TwoTrack<T> ofNullable(T val, Predicate<T> filter) {
+    static <T> TwoTrack<T> ofNullable(final T val, final Predicate<T> filter) {
         return Optional.ofNullable(val)
-                .filter(filter)
-                .map(TwoTrack::of)
-                .orElseGet(
-                        () -> TwoTrack.of(new ErrorCodeAndParam(ErrorCode.NOT_FOUND)));
+            .filter(filter)
+            .map(TwoTrack::of)
+            .orElseGet(
+                () -> TwoTrack.of(new ErrorCodeAndParam(ErrorCode.NOT_FOUND)));
     }
 
     static <T> TwoTrack<T> of(final ErrorCodeAndParam error) {
@@ -38,15 +38,18 @@ public interface TwoTrack<T> {
 
     <R> TwoTrack<R> map(Function<T, R> function);
 
-    default  <R> Function<TwoTrack<T>, TwoTrack<R>> asTwoTrack(final Function<T, R> function) {
+    <R> TwoTrack<R> flatMap(final Function<T, TwoTrack<R>> function);
+
+    default <R> Function<TwoTrack<T>, TwoTrack<R>> asTwoTrack(final Function<T, R> function) {
         return t -> t.map(function);
     }
 
 
     void onSuccess(Consumer<T> success);
+
     void onFailure(Consumer<ErrorCodeAndParam> failure);
 
-    default T get(final Function<ErrorCodeAndParam, T>  errorConverter){
+    default T get(final Function<ErrorCodeAndParam, T> errorConverter) {
         return Optional.ofNullable(get()).orElseGet(() -> errorConverter.apply(getErrorCode()));
     }
 
@@ -76,6 +79,11 @@ public interface TwoTrack<T> {
         @Override
         public <R> TwoTrack<R> map(final Function<T, R> function) {
             return TwoTrack.of(function.apply(get()));
+        }
+
+        @Override
+        public <R> TwoTrack<R> flatMap(final Function<T, TwoTrack<R>> function) {
+            return function.apply(val);
         }
 
         @Override
@@ -116,6 +124,11 @@ public interface TwoTrack<T> {
 
         @Override
         public <R> TwoTrack<R> map(final Function<T, R> function) {
+            return TwoTrack.of(errorCode);
+        }
+
+        @Override
+        public <R> TwoTrack<R> flatMap(final Function<T, TwoTrack<R>> function) {
             return TwoTrack.of(errorCode);
         }
 

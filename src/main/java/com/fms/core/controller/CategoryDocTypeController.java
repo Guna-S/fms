@@ -34,7 +34,7 @@ public class CategoryDocTypeController {
         notes = "Get All available category document types")
     @RequestMapping(method = RequestMethod.GET)
     public DeferredResult<ResponseEntity<List<CategoryDocTypeInfo>>> getAllCategories() {
-        return createDeferredResult(findAll()
+        return createDeferredResultTwoTrack(findAll()
                 .with(config.getCategoryDocTypeRepository()), HttpStatus.OK);
     }
 
@@ -59,7 +59,7 @@ public class CategoryDocTypeController {
     public DeferredResult<ResponseEntity<CategoryDocTypeInfo>> get(
         @ApiParam(name = "categoryId", value = "category id", required = true)
         @PathVariable final Long id) {
-        return createDeferredResult(find(id).with(config.getCategoryDocTypeRepository()), HttpStatus.OK);
+        return createDeferredResultTwoTrack(find(id).with(config.getCategoryDocTypeRepository()), HttpStatus.OK);
     }
 
     @ApiOperation(

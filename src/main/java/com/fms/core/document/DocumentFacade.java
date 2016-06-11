@@ -19,11 +19,11 @@ public class DocumentFacade {
         return Reader.of(config -> React.of(() -> uploadInfo)
             .thenP(info -> CategoryDocTypeFacade.findCategoryDocType
                 (info.getDocumentTypeId()).with(config.getCategoryDocTypeRepository()))
-            .then(cdt -> Tuple.of(DocumentUtil.getDocumentWithFileLocation(uploadInfo).apply(Tuple.of(config.getRootFolder(),
-                cdt)), cdt))
-            .then(tuple -> DocumentConverter.convert(tuple._1).apply(tuple._2))
-            .then(document -> config.getFileWriter().apply(document))
-//            .then(s -> s.asTwoTrack(st-> config.getDocumentRepository().save(st)))
+            .then(asTwoTrack(cdt -> Tuple.of(DocumentUtil.getDocumentWithFileLocation(uploadInfo).apply(Tuple.of(config
+                .getRootFolder(),
+                cdt)), cdt)))
+            .then(asTwoTrack(tuple -> DocumentConverter.convert(tuple._1).apply(tuple._2)))
+            .then(document -> document.flatMap(d -> config.getFileWriter().apply(d)))
             .then(asTwoTrack(s-> config.getDocumentRepository().save(s)))
             .then(asTwoTrack(DocumentConverter::convertTo))
             .getPromise());

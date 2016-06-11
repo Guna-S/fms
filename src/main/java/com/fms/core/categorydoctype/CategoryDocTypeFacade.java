@@ -1,9 +1,6 @@
 package com.fms.core.categorydoctype;
 
-import com.fms.core.common.Promise;
-import com.fms.core.common.React;
-import com.fms.core.common.Reader;
-import com.fms.core.common.TwoTrack;
+import com.fms.core.common.*;
 import com.fms.core.config.FmsConfig;
 import com.fms.core.model.CategoryDocType;
 import com.fms.core.model.UploadCategory;
@@ -20,7 +17,11 @@ import static com.fms.core.uploadcategory.UploadCategoryFacade.findByName;
 
 public class CategoryDocTypeFacade {
 
-
+    /**
+     *
+     * @param info
+     * @return
+     */
     public static Reader<FmsConfig, Promise<TwoTrack<CategoryDocTypeInfo>>> save(final CategoryDocTypeInfo info) {
         return Reader.of(config -> React.of(info)
                 .thenP(findUploadCategory().with(config.getUploadCategoryRepository()))
@@ -33,21 +34,33 @@ public class CategoryDocTypeFacade {
                 .getPromise());
     }
 
-    public static Reader<CategoryDocTypeRepository, Promise<List<CategoryDocTypeInfo>>> findAll() {
+    /**
+     *
+     * @return
+     */
+    public static Reader<CategoryDocTypeRepository, Promise<TwoTrack<List<CategoryDocTypeInfo>>>> findAll() {
         return Reader.of(repo -> React.of(() -> repo.findAll())
                 .then(asList(CategoryDocTypeConverter::convertTo))
+                .then(TwoTrack::ofNullable)
                 .getPromise());
     }
 
-    public static Reader<CategoryDocTypeRepository, Promise<CategoryDocTypeInfo>> find(final Long id) {
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public static Reader<CategoryDocTypeRepository, Promise<TwoTrack<CategoryDocTypeInfo>>> find(final Long id) {
         return Reader.of(repo -> React.of(id)
                 .then(repo::findOne)
-                .then(CategoryDocTypeConverter::convertTo)
+                .then(TwoTrack::ofNullable)
+                .then(FunctionUtils.asTwoTrack(CategoryDocTypeConverter::convertTo))
                 .getPromise());
     }
 
-    public static Reader<CategoryDocTypeRepository,Promise<CategoryDocType>> findCategoryDocType(final Long id) {
-        return Reader.of(repo -> getCategoryDocTypeReact(id).with(repo).getPromise());
+    public static Reader<CategoryDocTypeRepository,Promise<TwoTrack<CategoryDocType>>> findCategoryDocType(
+                                                                                                        final Long id) {
+        return Reader.of(repo -> getCategoryDocTypeReact(id).with(repo).then(TwoTrack::ofNullable).getPromise());
     }
 
     private static Reader<CategoryDocTypeRepository, React<CategoryDocType>> getCategoryDocTypeReact(final Long id) {

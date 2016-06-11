@@ -1,17 +1,14 @@
 package com.fms.core.common;
-
-/**
- * Created by Ganesan on 02/06/16.
- */
+@SuppressWarnings("OverloadedVarargsMethod")
 public class ErrorCodeAndParam {
 
     private final ErrorCode errorCode;
     private final String[] params;
-    private  Throwable cause;
+    private final Throwable cause;
 
-    public ErrorCodeAndParam(final ErrorCode errorCode,final String... params) {
-        this.params = params;
-        this.errorCode = errorCode;
+
+    public ErrorCodeAndParam(final ErrorCode errorCode, final String... params) {
+        this(new ValidationException(), errorCode, params);
     }
 
     public ErrorCodeAndParam(final Throwable cause, final ErrorCode errorCode, final String... params) {
