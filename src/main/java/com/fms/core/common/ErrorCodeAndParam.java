@@ -1,27 +1,28 @@
 package com.fms.core.common;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.http.HttpStatus;
+
 @SuppressWarnings("OverloadedVarargsMethod")
 public class ErrorCodeAndParam {
 
-    private final ErrorCode errorCode;
+    private final String errorCode;
     private final String[] params;
-    private final Throwable cause;
+    @JsonIgnore
+    private final HttpStatus httpStatus;
 
 
     public ErrorCodeAndParam(final ErrorCode errorCode, final String... params) {
-        this(new ValidationException(), errorCode, params);
-    }
-
-    public ErrorCodeAndParam(final Throwable cause, final ErrorCode errorCode, final String... params) {
-        this.errorCode = errorCode;
+        this.errorCode = errorCode.getStatus();
         this.params = params;
-        this.cause = cause;
+        this.httpStatus = errorCode.getHttpStatus();
     }
 
-    public Throwable getCause() {
-        return cause;
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
     }
 
-    public ErrorCode getErrorCode() {
+    public String getErrorCode() {
         return errorCode;
     }
 

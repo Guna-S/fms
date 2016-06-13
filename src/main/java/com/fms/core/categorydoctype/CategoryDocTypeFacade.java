@@ -51,11 +51,13 @@ public class CategoryDocTypeFacade {
      * @return
      */
     public static Reader<CategoryDocTypeRepository, Promise<TwoTrack<CategoryDocTypeInfo>>> find(final Long id) {
-        return Reader.of(repo -> React.of(id)
+        final Reader<CategoryDocTypeRepository, Promise<TwoTrack<CategoryDocTypeInfo>>> reader =
+            Reader.of(repo -> React.of(id)
                 .then(repo::findOne)
                 .then(TwoTrack::ofNullable)
                 .then(FunctionUtils.asTwoTrack(CategoryDocTypeConverter::convertTo))
                 .getPromise());
+        return reader;
     }
 
     public static Reader<CategoryDocTypeRepository,Promise<TwoTrack<CategoryDocType>>> findCategoryDocType(

@@ -24,6 +24,8 @@ public class DocumentInfo implements Serializable {
     private String fileLocation;
     @ApiModelProperty(value = "document id")
     private Long id;
+    @ApiModelProperty(value = "file sequence")
+    private Long fileSequence;
 
 
     public Long getId() {
@@ -50,6 +52,10 @@ public class DocumentInfo implements Serializable {
         return fileLocation;
     }
 
+    public Long getFileSequence() {
+        return fileSequence;
+    }
+
     public static Builder<DocumentInfo> builder() {
         return Builder.of(DocumentInfo.class);
     }
@@ -63,6 +69,7 @@ public class DocumentInfo implements Serializable {
             .with(DocumentInfo::getDocumentTypeId, info.getDocumentTypeId())
             .with(DocumentInfo::getFileInfo, info.getFileInfo())
             .with(DocumentInfo::getFileName, info.getFileName())
-            .with(DocumentInfo::getUploaderId, info.getUploaderId());
+            .with(DocumentInfo::getUploaderId, info.getUploaderId())
+            .with(DocumentInfo::getFileSequence,info.getFileSequence());
     }
 }

@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "FMS_TR_UPLOADED_DOCS", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"UD_DOC_ID", "UD_CD_ID"})
+    @UniqueConstraint(columnNames = {"UD_DOC_ID", "UD_CD_ID","UD_FILE_SEQUENCE"})
 })
 public class DocumentModel implements Serializable {
 
@@ -34,6 +34,9 @@ public class DocumentModel implements Serializable {
     @Column(name = "UD_FILE_LOCATION")
     private String fileLocation;
 
+    @Column(name = "UD_FILE_SEQUENCE")
+    private Long fileSequence;
+
 
     public Long getId() {
         return id;
@@ -57,6 +60,10 @@ public class DocumentModel implements Serializable {
 
     public String getFileLocation() {
         return fileLocation;
+    }
+
+    public Long getFileSequence() {
+        return fileSequence;
     }
 
     public static Builder<DocumentModel> builder() {

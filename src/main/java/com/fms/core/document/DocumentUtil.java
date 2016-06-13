@@ -13,12 +13,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * Created by Ganesan on 02/06/16.
+ * <p></p>
  */
 public class DocumentUtil {
 
@@ -47,9 +49,13 @@ public class DocumentUtil {
                     return path;
                 }).mapTry(path -> Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING))
                 .mapTry(l -> TwoTrack.of(doc))
-                .getOrElseGet(e-> TwoTrack.of(new ErrorCodeAndParam(e, ErrorCode.FILE_WRITING_FAILED)));
+                .getOrElseGet(e-> TwoTrack.of(new ErrorCodeAndParam(ErrorCode.FILE_WRITING_FAILED)));
     }
 
-
-
+    public static Function<CategoryDocType,TwoTrack<CategoryDocType>> validateFileSequence(final UploadInfo uploadInfo){
+        return categoryDocType -> Optional.ofNullable(uploadInfo)
+                                          .filter((info) -> !categoryDocType.isMultiple() && info.getFileSequence().equals(0))
+                                          .map(info -> TwoTrack.of(categoryDocType))
+                                          .orElseGet(() -> TwoTrack.of(new ErrorCodeAndParam(ErrorCode.DOC_FILE_SEQUENCE)));
+    }
 }

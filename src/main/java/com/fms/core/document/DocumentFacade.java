@@ -19,6 +19,8 @@ public class DocumentFacade {
         return Reader.of(config -> React.of(() -> uploadInfo)
             .thenP(info -> CategoryDocTypeFacade.findCategoryDocType
                 (info.getDocumentTypeId()).with(config.getCategoryDocTypeRepository()))
+            .then(cdt -> cdt.flatMap(categoryDocType -> DocumentUtil.validateFileSequence(uploadInfo).apply
+                (categoryDocType)))
             .then(asTwoTrack(cdt -> Tuple.of(DocumentUtil.getDocumentWithFileLocation(uploadInfo).apply(Tuple.of(config
                 .getRootFolder(),
                 cdt)), cdt)))

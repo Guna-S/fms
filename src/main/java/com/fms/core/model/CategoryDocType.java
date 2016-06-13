@@ -23,6 +23,9 @@ public class CategoryDocType {
     @Column(name = "CD_DESC")
     private String desc;
 
+    @Column(name="CD_MULTIPLE")
+    private Boolean multiple;
+
 
     public CategoryDocType() {
     }
@@ -42,6 +45,10 @@ public class CategoryDocType {
 
     public String getDesc() {
         return desc;
+    }
+
+    public Boolean isMultiple() {
+        return multiple;
     }
 
     public static Builder<CategoryDocType> builder() {

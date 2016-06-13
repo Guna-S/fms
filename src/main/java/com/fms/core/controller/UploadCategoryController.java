@@ -3,9 +3,7 @@ package com.fms.core.controller;
 import com.fms.core.repository.UploadCategoryRepository;
 import com.fms.core.uploadcategory.UploadCategoryInfo;
 import com.fms.core.uploadcategory.UploadCategoryInfoDet;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 import static com.fms.core.DeferredResultProvider.createDeferredResult;
@@ -32,6 +31,12 @@ public class UploadCategoryController {
         consumes = MediaType.APPLICATION_JSON_VALUE,
         value = "Get All available upload categories",
         notes = "Get all categories api")
+    @ApiResponses({
+        @ApiResponse(code = HttpServletResponse.SC_OK, message = "OK"),
+        @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "SKU not found"),
+        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Invalid request"),
+        @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message = "Internal server error")
+    })
     @RequestMapping(method = RequestMethod.GET)
     public DeferredResult<ResponseEntity<List<UploadCategoryInfoDet>>> getAllCategories() {
         return createDeferredResult(findAll()

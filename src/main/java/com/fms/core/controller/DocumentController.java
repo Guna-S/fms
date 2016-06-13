@@ -54,7 +54,7 @@ public class DocumentController {
     }
 
     @ApiOperation(
-        produces = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_OCTET_STREAM_VALUE,
         consumes = MediaType.APPLICATION_JSON_VALUE,
         value = "download document from document id",
         notes = "download document from document id"

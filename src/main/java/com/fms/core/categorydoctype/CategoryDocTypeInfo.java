@@ -21,6 +21,9 @@ public class CategoryDocTypeInfo implements Serializable {
     @ApiModelProperty(value = "document type id")
     private String id;
 
+    @ApiModelProperty(value = "document is multiple or single document",required = true)
+    private Boolean multiple;
+
     public CategoryDocTypeInfo() {
     }
 
@@ -42,6 +45,10 @@ public class CategoryDocTypeInfo implements Serializable {
 
     public String getDesc() {
         return desc;
+    }
+
+    public Boolean isMultiple() {
+        return multiple;
     }
 
     public static Builder<CategoryDocTypeInfo> builder() {
