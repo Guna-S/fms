@@ -18,3 +18,8 @@ spring:
     database-platform: org.hibernate.dialect.HSQLDialect
  datasource:
     data: classpath:/master.sql
+
+multipart:
+  maxFileSize: -1
+
+

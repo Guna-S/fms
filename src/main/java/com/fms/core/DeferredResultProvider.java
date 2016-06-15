@@ -19,7 +19,7 @@ public class DeferredResultProvider {
         final DeferredResult<ResponseEntity<T>> deferredResult = new DeferredResult<>();
         task.success((t) -> {
             t.onSuccess(v -> deferredResult.setResult(new ResponseEntity<>(v, httpStatus)));
-            t.onFailure(e -> deferredResult.setErrorResult(new ResponseEntity<>(e,e.getHttpStatus())));
+            t.onFailure(e -> deferredResult.setErrorResult(new ResponseEntity<>(e, e.getHttpStatus())));
         }).failure(deferredResult::setErrorResult);
         return deferredResult;
     }
@@ -29,25 +29,4 @@ public class DeferredResultProvider {
         return createDeferredResultTwoTrack(React.of(task).then(TwoTrack::of).getPromise(), httpStatus);
     }
 
-    public static void main(final String[] args) {
-        final AsyncRestTemplate asycTemp = new AsyncRestTemplate();
-        final String url ="http://localhost:8091/fms/categorydoctypes/4";
-        final HttpMethod method = HttpMethod.GET;
-        final HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        final HttpEntity<String> requestEntity = new HttpEntity<String>("params", requestHeaders);
-        final ListenableFuture<ResponseEntity<CategoryDocTypeInfo>>   future = asycTemp.exchange(url, method, requestEntity,
-            CategoryDocTypeInfo.class);
-        future.addCallback(new ListenableFutureCallback<ResponseEntity<CategoryDocTypeInfo>>() {
-            @Override
-            public void onFailure(final Throwable ex) {
-                System.out.println("fail"+ex);
-            }
-
-            @Override
-            public void onSuccess(final ResponseEntity<CategoryDocTypeInfo> result) {
-                System.out.println("success");
-            }
-        });
-    }
 }
