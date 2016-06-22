@@ -20,22 +20,20 @@ public class DocumentConverter {
             .set(info.getFileLocation())
             .on(d -> d.getFileName())
             .set(info.getFileName())
+                .on(d -> d.getFileSequence())
+                .set(info.getFileSequence())
             .build();
     }
 
     public static DocumentInfo convertTo(final DocumentModel doc) {
         return DocumentInfo.builder()
-            .with(d -> d.getId(),doc.getId())
-            .on(d -> d.getDocumentTypeId())
-            .set(doc.getCategoryDocType().getId())
-            .on(d -> d.getUploaderId())
-            .set(doc.getDocumentUploaderId())
-            .on(d -> d.getFileInfo())
-            .set(doc.getFileInfo())
-            .on(d -> d.getFileLocation())
-            .set(doc.getFileLocation())
-            .on(d -> d.getFileName())
-            .set(doc.getFileName())
+                .on(d -> d.getId()).set(doc.getId())
+                .on(d -> d.getDocumentTypeId()).set(doc.getCategoryDocType().getId())
+                .on(d -> d.getUploaderId()).set(doc.getDocumentUploaderId())
+                .on(d -> d.getFileInfo()).set(doc.getFileInfo())
+                .on(d -> d.getFileLocation()).set(doc.getFileLocation())
+                .on(d -> d.getFileName()).set(doc.getFileName())
+                .on(d -> d.getFileSequence()).set(doc.getFileSequence())
             .build();
     }
 

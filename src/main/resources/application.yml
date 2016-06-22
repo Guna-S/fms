@@ -23,3 +23,7 @@ multipart:
   maxFileSize: -1
 
 
+#hibernate.driver=org.h2.Driver
+#hibernate.url=jdbc:postgresql://ec2-52-48-133-9.eu-west-1.compute.amazonaws.com:5432/test_db
+#hibernate.user=testdev
+#hibernate.pwd=testdev123

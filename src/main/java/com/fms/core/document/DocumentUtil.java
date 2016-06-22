@@ -1,5 +1,6 @@
 package com.fms.core.document;
 
+import com.fms.core.common.Builder;
 import com.fms.core.common.ErrorCode;
 import com.fms.core.common.ErrorCodeAndParam;
 import com.fms.core.common.TwoTrack;
@@ -53,9 +54,15 @@ public class DocumentUtil {
     }
 
     public static Function<CategoryDocType,TwoTrack<CategoryDocType>> validateFileSequence(final UploadInfo uploadInfo){
-        return categoryDocType -> Optional.ofNullable(uploadInfo)
-                                          .filter((info) -> !categoryDocType.isMultiple() && info.getFileSequence().equals(0))
-                                          .map(info -> TwoTrack.of(categoryDocType))
-                                          .orElseGet(() -> TwoTrack.of(new ErrorCodeAndParam(ErrorCode.DOC_FILE_SEQUENCE)));
+        return categoryDocType -> {
+            TwoTrack<CategoryDocType> categoryDocTypeTwoTrack = TwoTrack.of(categoryDocType);
+            if(!categoryDocType.isMultiple() && uploadInfo.getFileSequence().intValue() != 0) {
+                categoryDocTypeTwoTrack = TwoTrack.of(new ErrorCodeAndParam(ErrorCode.DOC_FILE_SEQUENCE));
+            }
+            return categoryDocTypeTwoTrack;
+        };
     }
+
+
+
 }

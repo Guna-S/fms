@@ -4,6 +4,7 @@ import com.fms.core.categorydoctype.CategoryDocTypeInfo;
 import com.fms.core.common.Promise;
 import com.fms.core.common.React;
 import com.fms.core.common.TwoTrack;
+import com.sun.tools.hat.internal.model.StackTrace;
 import org.springframework.http.*;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
@@ -18,8 +19,15 @@ public class DeferredResultProvider {
                                                                                      final HttpStatus httpStatus) {
         final DeferredResult<ResponseEntity<T>> deferredResult = new DeferredResult<>();
         task.success((t) -> {
+
             t.onSuccess(v -> deferredResult.setResult(new ResponseEntity<>(v, httpStatus)));
-            t.onFailure(e -> deferredResult.setErrorResult(new ResponseEntity<>(e, e.getHttpStatus())));
+            t.onFailure(e -> {
+                System.out.println(e.getErrorCode() +" : " + e.getHttpStatus() +" : "+ Arrays.asList(e.getParams()));
+                for(StackTraceElement stackTraceElement : e.getStackTrace()){
+                    System.out.println(stackTraceElement);
+                }
+                deferredResult.setErrorResult(new ResponseEntity<>(e, e.getHttpStatus()));
+            });
         }).failure(deferredResult::setErrorResult);
         return deferredResult;
     }

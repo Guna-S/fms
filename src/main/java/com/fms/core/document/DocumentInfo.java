@@ -11,7 +11,6 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DocumentInfo implements Serializable {
 
-    private static final long serialVersionUID = -6390849593000747058L;
     @ApiModelProperty(value = "document type id")
     private Long documentTypeId;
     @ApiModelProperty(value = "uploader id")
