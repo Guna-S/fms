@@ -1,14 +1,10 @@
 package com.fms.core;
 
-import com.fms.core.categorydoctype.CategoryDocTypeInfo;
 import com.fms.core.common.Promise;
 import com.fms.core.common.React;
 import com.fms.core.common.TwoTrack;
-import com.sun.tools.hat.internal.model.StackTrace;
-import org.springframework.http.*;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
-import org.springframework.web.client.AsyncRestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.Arrays;
