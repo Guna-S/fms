@@ -15,9 +15,9 @@ spring:
     show-sql: true
  datasource:
     platform: postgres
-    url: jdbc:postgresql://ec2-52-48-133-9.eu-west-1.compute.amazonaws.com:5432/test_db
-    username: testdev
-    password: testdev123
+    url: jdbc:postgresql://localhost:5432/FMS
+    username: FMS
+    password: changeme
     driverClassName: org.postgresql.Driver
 
 multipart:

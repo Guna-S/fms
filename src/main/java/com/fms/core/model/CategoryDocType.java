@@ -6,10 +6,11 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "FMS_MA_CATEGORY_DOCTYPE")
+@SequenceGenerator(name="fms_sq_cd", sequenceName = "fms_sq_cd")
 public class CategoryDocType {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fms_sq_cd")
     @Column(name = "CD_ID")
     private Long id;
 

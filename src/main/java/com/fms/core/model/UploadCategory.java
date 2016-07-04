@@ -6,10 +6,11 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "FMS_MA_UPLOAD_CATEGORY")
+@SequenceGenerator(name="fms_sq_uc", sequenceName = "fms_sq_uc")
 public class UploadCategory {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fms_sq_uc")
     @Column(name = "UC_ID")
     private Long id;
 

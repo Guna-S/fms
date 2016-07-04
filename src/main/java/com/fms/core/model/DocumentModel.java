@@ -9,12 +9,13 @@ import java.io.Serializable;
 @Table(name = "FMS_TR_UPLOADED_DOCS", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"UD_DOC_ID", "UD_CD_ID","UD_FILE_SEQUENCE"})
 })
+@SequenceGenerator(name="fms_sq_ud", sequenceName = "fms_sq_ud")
 public class DocumentModel implements Serializable {
 
     private static final long serialVersionUID = 3508481074333082181L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fms_sq_ud")
     @Column(name = "UD_ID")
     private Long id;
 
