@@ -87,7 +87,7 @@ public class DocumentController {
         value = "remove the document for given document id",
         notes = "remove the document for given document id"
     )
-    @RequestMapping(value = "/delete/{docId}",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/{docId}", method = RequestMethod.DELETE)
     public DeferredResult<ResponseEntity<Long>> remove(
         @ApiParam(name = "docId",value = "document id")
         @PathVariable final Long docId){
