@@ -4,6 +4,6 @@ create table fms_tr_uploaded_docs (ud_id int8 not null, ud_doc_id varchar(255), 
 alter table fms_tr_uploaded_docs add constraint UK_UD_001 unique (ud_doc_id, ud_cd_id, ud_file_sequence);
 alter table fms_ma_category_doctype add constraint FK_CD_001 foreign key (cd_uc_id) references fms_ma_upload_category;
 alter table fms_tr_uploaded_docs add constraint FK_UD_001 foreign key (ud_cd_id) references fms_ma_category_doctype;
-create sequence fms_sq_cd;
-create sequence fms_sq_uc;
-create sequence fms_sq_ud;
+create sequence fms_sq_cd INCREMENT by 1 start with 1;
+create sequence fms_sq_uc INCREMENT by 1 start with 1;
+create sequence fms_sq_ud INCREMENT by 1 start with 1;
