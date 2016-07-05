@@ -3,7 +3,7 @@ server:
   context-path: /fms
 
 file:
-  rootFolder: /Users/Ganesan/Work/Assay/FMS
+  rootFolder: /home/ec2-user/FMS
 
 info:
     app.name: File Management System Service
